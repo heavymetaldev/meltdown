@@ -1,0 +1,8 @@
+.vs/
+bin/
+obj/
+.build/
+packages/
+node_modules/
+*.suo
+*.user
