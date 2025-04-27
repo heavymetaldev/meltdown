@@ -5,7 +5,7 @@ import { patchConsole } from "./utils/console-utils.js";
 import { Root } from "./Root.js";
 
 
-export default function cli() {
+export function cli() {
 
   patchConsole();
 

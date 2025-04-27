@@ -1,0 +1,13 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+  </PropertyGroup>
+
+
+  <Target Name="BuildNode" AfterTargets="Build">
+    <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
+    <Exec WorkingDirectory="$(OutputPath)/CLI" Command="npm install" Condition="'$(NoNpm)'!='true'" />
+    <Exec WorkingDirectory="$(OutputPath)/CLI" Command="npm run build" Condition="'$(NoNpm)'!='true'" />
+  </Target>
+</Project>

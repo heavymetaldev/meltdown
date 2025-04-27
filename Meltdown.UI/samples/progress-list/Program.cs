@@ -1,6 +1,15 @@
 ﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+Console.WriteLine("Starting progress-list sample...");
 
-await HMDev.NodeUI.NodeUI.StartAsync(c => c with {
-    ClientApp = "CLI/index.js"
+var comm = await HMDev.NodeUI.NodeUI.StartAsync(c =>
+{
+    var paths = c with
+    {
+        ClientApp = "CLI/index.js"
+    };
+
+    Console.WriteLine($"CWD: {Environment.CurrentDirectory}");
+    Console.WriteLine(paths);
+
+    return paths;
 });

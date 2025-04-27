@@ -1,5 +1,6 @@
 ﻿using Microsoft.JavaScript.NodeApi;
 using Microsoft.JavaScript.NodeApi.Runtime;
+using System.Diagnostics;
 using System.Reflection;
 using static HMDev.NodeUI.SignalRQueue;
 
@@ -11,9 +12,18 @@ public class NodeUI
     {
         public required string LibNode { get; init; }
         public required string ClientApp { get; init; }
-        public string WorkingDirectory => Path.GetDirectoryName(ClientApp) ?? throw new Exception($"Could not determine working directory from ClientApp path: '{ClientApp}'");
-        public string EntryPoint => Path.GetFileName(ClientApp);
 
+        public string BaseDir { get; internal init; } = string.Empty;
+        public string WorkingDirectory => (Path.IsPathRooted(ClientApp) ? Path.GetDirectoryName(ClientApp) : Path.GetDirectoryName(Path.Combine(BaseDir, ClientApp))) ?? throw new Exception($"Could not determine working directory from ClientApp path: '{ClientApp}'");
+        public string EntryPoint => Path.GetFileName(ClientApp);
+    }
+
+    public record DirectComm(IProgressReporter ProgressReporter, ICommandDispatcher CommandDispatcher);
+
+    private class Exports
+    {
+        public const string MainMethod = "cli";
+        public const string CommandEmitter = "commandEmitter";
     }
 
     private static Paths GetPaths()
@@ -24,11 +34,10 @@ public class NodeUI
 
         var clientApp = Path.Combine(baseDir, "CLI", "index.js");
 
-
-        return new Paths { ClientApp = clientApp, LibNode = libnodePath };
+        return new Paths { ClientApp = clientApp, LibNode = libnodePath, BaseDir = baseDir };
     }
 
-    public static async Task<(IProgressReporter, ICommandDispatcher)> StartAsync(Func<Paths, Paths>? configure = null)
+    public static async Task<DirectComm> StartAsync(Func<Paths, Paths>? configure = null)
     {
         var paths = GetPaths();
         if (configure is not null)
@@ -59,10 +68,10 @@ public class NodeUI
                 try
                 {
                     var module = await nodejsRuntime.ImportAsync("./" + paths.EntryPoint, esModule: true);
-                    var invoker = module.GetProperty("commandEmitter");
+                    var invoker = module.GetProperty(Exports.CommandEmitter);
                     callback.Register(invoker);
 
-                    module.CallMethod("cli");
+                    module.CallMethod(Exports.MainMethod);
                 }
                 catch (Exception ex)
                 {
@@ -70,13 +79,14 @@ public class NodeUI
                 }
             });
 
-            return (new DirectProgressReporter(nodejsRuntime), new DirectCommandDispatcher(callback));
-        } catch(Exception ex)
+            return new(new DirectProgressReporter(nodejsRuntime), new DirectCommandDispatcher(callback));
+        }
+        catch (Exception ex)
         {
             throw;
         }
     }
 
-    public static (IProgressReporter, ICommandDispatcher) Start(Func<Paths, Paths>? configure = null) 
+    public static DirectComm Start(Func<Paths, Paths>? configure = null)
         => StartAsync(configure).GetAwaiter().GetResult();
 }

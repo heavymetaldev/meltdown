@@ -15,13 +15,10 @@
     <None Update="import.cjs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="CLI\index.js">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Meltdown.UI" Version="1.0.1-beta045" />
+    <PackageReference Include="Meltdown.UI" Version="1.0.1-beta031" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="9.0.4" />
   </ItemGroup>
 

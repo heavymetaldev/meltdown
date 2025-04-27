@@ -1,5 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -7,26 +6,39 @@
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <PreserveCompilationContext>true</PreserveCompilationContext>
     <NodeApiAssemblyJSModuleType>esm</NodeApiAssemblyJSModuleType>
+    <VersionPrefix>1.0.1</VersionPrefix>
+    <VersionSuffix>beta045</VersionSuffix>
+    <DebugType>embedded</DebugType>
+    <IncludeSymbols>true</IncludeSymbols>
+    <!-- <SymbolPackageFormat>snupkg</SymbolPackageFormat> -->
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.2.0" />
     <PackageReference Include="Microsoft.JavaScript.LibNode" Version="20.1800.215" />
     <PackageReference Include="Microsoft.JavaScript.NodeApi" Version="0.9.11" />
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
-
   <ItemGroup>
     <Compile Remove="CLI/**" />
     <Content Include="CLI/*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Pack>true</Pack>
       <PackageCopyToOutput>true</PackageCopyToOutput>
-    </Content >
+    </Content>
     <Content Include="CLI/utils/*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Pack>true</Pack>
       <PackageCopyToOutput>true</PackageCopyToOutput>
-    </Content >
+    </Content>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="build\$(PackageId).targets" PackagePath="%(Identity)" />
+  </ItemGroup>
+  <!--<Target Name="BuildNode" AfterTargets="Build">
+    -->
+  <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
+  <!--
+    <Exec WorkingDirectory="CLI" Command="npm install" Condition="'$(NoNpm)'!='true'" />
+    <Exec WorkingDirectory="CLI" Command="npm run build" Condition="'$(NoNpm)'!='true'" />
+  </Target>-->
 </Project>

@@ -5,7 +5,7 @@
   "license": "ISC",
   "description": "",
   "type": "module",
-  "main": "index.js",
+  "main": "start.js",
   "scripts": {
     "tsc:dev": "tsc --watch",
     "build": "tsc",
