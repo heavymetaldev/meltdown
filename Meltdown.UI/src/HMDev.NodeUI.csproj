@@ -18,11 +18,15 @@
 
   <ItemGroup>
     <Compile Remove="CLI/**" />
-    <None Include="CLI/*" Pack="true">
+    <Content Include="CLI/*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="CLI/utils/*" Pack="true">
+      <Pack>true</Pack>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+    </Content >
+    <Content Include="CLI/utils/*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+      <Pack>true</Pack>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
+    </Content >
   </ItemGroup>
 </Project>

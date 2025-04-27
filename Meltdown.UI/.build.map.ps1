@@ -11,13 +11,13 @@ $targets = @{
     "pack" = {
         param($ctx)
 
-        dotnet pack --output "$PSScriptRoot/dist" --version-suffix "beta01"
+        dotnet pack "$psscriptroot/src" --output "$PSScriptRoot/dist" --version-suffix "beta02"
     }
 
     "publish" = {
         param($ctx)
-        qbuild "pack"
-        dotnet nuget push "$PSScriptRoot/dist/" -s https://api.nuget.org/v3/index.json -k "$env:NUGET_API_KEY"--skip-duplicate
+        qbuild pack
+        dotnet nuget push "$PSScriptRoot/dist/" -s https://api.nuget.org/v3/index.json -k "$env:NUGET_API_KEY"
     }
 }
 
