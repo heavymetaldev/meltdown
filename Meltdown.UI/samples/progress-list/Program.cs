@@ -7,6 +7,9 @@ await comm.ProgressReporter.Command("root", "setVariant", ["simple"]);
 int heartbeat = 0;
 while (true)
 {
+    // console will be redirected to NodeUI
     Console.WriteLine($"Heartbeat {heartbeat++}");
+    // but you can also use the progress reporter directly
+    await comm.ProgressReporter.Log("root", $"Heartbeat {heartbeat}");
     await Task.Delay(1000);
 }
