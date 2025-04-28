@@ -1,4 +1,5 @@
-﻿using Microsoft.JavaScript.NodeApi;
+﻿using Meltdown.UI;
+using Microsoft.JavaScript.NodeApi;
 using Microsoft.JavaScript.NodeApi.Runtime;
 using System.Diagnostics;
 using System.Reflection;
@@ -45,14 +46,12 @@ public class NodeUI
             paths = configure(paths);
         }
 
-        var consoleHandler = new StringWriter();
-        Console.SetOut(consoleHandler);
-
-
         var nodejsPlatform = new NodeEmbeddingPlatform(new NodeEmbeddingPlatformSettings()
         {
             LibNodePath = paths.LibNode,
         });
+
+
 
         try
         {
@@ -61,6 +60,9 @@ public class NodeUI
                 {
                     MainScript = "globalThis.require = require('module').createRequire(process.execPath);\n",
                 });
+
+            var progressReporter = new DirectProgressReporter(nodejsRuntime);
+            Console.SetOut(new ProgressWriter(progressReporter));
 
             var callback = new CommandCallback();
             await nodejsRuntime.RunAsync(async () =>
@@ -79,7 +81,7 @@ public class NodeUI
                 }
             });
 
-            return new(new DirectProgressReporter(nodejsRuntime), new DirectCommandDispatcher(callback));
+            return new(progressReporter, new DirectCommandDispatcher(callback));
         }
         catch (Exception ex)
         {

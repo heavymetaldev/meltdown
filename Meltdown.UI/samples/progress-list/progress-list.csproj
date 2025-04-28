@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Meltdown.UI" Version="1.0.1-beta058" />
+    <PackageReference Include="Meltdown.UI" Version="1.0.1-beta064" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="9.0.4" />
   </ItemGroup>
 

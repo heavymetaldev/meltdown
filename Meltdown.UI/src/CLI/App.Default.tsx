@@ -7,7 +7,7 @@ export default function App(props: Parameters<typeof Box>[0]) {
 
   React.useEffect(() => {
     const logListener = (path: string, message: string) => {
-      setLog((prevLog) => [...prevLog, message]);
+      setLog((prevLog) => [...prevLog, `[${path}] ${message}`]);
     };
 
     progressEmitter.on("log", logListener);
