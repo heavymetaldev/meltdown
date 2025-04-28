@@ -7,7 +7,7 @@
     <PreserveCompilationContext>true</PreserveCompilationContext>
     <NodeApiAssemblyJSModuleType>esm</NodeApiAssemblyJSModuleType>
     <VersionPrefix>1.0.1</VersionPrefix>
-    <VersionSuffix>beta045</VersionSuffix>
+    <VersionSuffix>beta058</VersionSuffix>
     <DebugType>embedded</DebugType>
     <IncludeSymbols>true</IncludeSymbols>
     <!-- <SymbolPackageFormat>snupkg</SymbolPackageFormat> -->

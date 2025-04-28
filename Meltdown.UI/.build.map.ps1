@@ -14,13 +14,13 @@ $targets = @{
     "pack"           = {
         param($ctx, [ValidateSet("debug", "release")] $configuration = "debug")
 
-        $versionSuffix = get-xmlconfig "src/Meltdown.UI.csproj" -Path "Project/PropertyGroup/VersionSuffix"
+        $versionSuffix = get-xmlconfig "$psscriptroot/src/Meltdown.UI.csproj" -Path "Project/PropertyGroup/VersionSuffix"
         if ($versionSuffix -match "(?<part1>.*?)(?<number>\d+)$") {
             $number = $matches["number"]
             $number = [int]$number + 1
             $versionSuffix = $matches["part1"] + [string]::Format("{0:D3}", $number)
         }
-        set-xmlconfig "src/Meltdown.UI.csproj" -Path "Project/PropertyGroup/VersionSuffix" -Value $versionSuffix
+        set-xmlconfig "$psscriptroot/src/Meltdown.UI.csproj" -Path "Project/PropertyGroup/VersionSuffix" -Value $versionSuffix
         
         write-host "packing with version suffix: $versionSuffix" -ForegroundColor Green
         dotnet pack "$psscriptroot/src" --output "$PSScriptRoot/dist" `
