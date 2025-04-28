@@ -37,7 +37,7 @@ $targets = @{
             $versionSuffix = get-xmlconfig "src/Meltdown.UI.csproj" -Path "Project/PropertyGroup/VersionSuffix"
 
             $version = "$versionPrefix-$versionSuffix"
-            $package = "Meltdown.UI.$version.nupkg"
+            $package = "dist/Meltdown.UI.$version.nupkg"
 
             switch ($source) {
                 "nuget" { 
