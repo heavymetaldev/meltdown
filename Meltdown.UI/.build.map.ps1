@@ -37,14 +37,14 @@ $targets = @{
             $versionSuffix = get-xmlconfig "src/Meltdown.UI.csproj" -Path "Project/PropertyGroup/VersionSuffix"
 
             $version = "$versionPrefix-$versionSuffix"
-        
+            $package = "Meltdown.UI.$version.nupkg"
+
             switch ($source) {
                 "nuget" { 
-                    dotnet nuget push "dist/" -s "https://api.nuget.org/v3/index.json"  -k "$env:NUGET_API_KEY"
+                    dotnet nuget push $package -s "https://api.nuget.org/v3/index.json"  -k "$env:NUGET_API_KEY"
                 }
                 "local" {
-                    # nuget add "dist/Meltdown.UI.$version.nupkg" -s "dist/nuget"
-                    nuget add "dist/Meltdown.UI.$version.symbols.nupkg" -s "dist/nuget"
+                    nuget add $package -s "dist/nuget"
                 }
             }
         }
@@ -78,13 +78,13 @@ $targets = @{
     }
 
     "clean"          = {
-        $binDirs = Get-ChildItem $PSScriptRoot -Filter bin -Recurse -Directory 
+        $binDirs = Get-ChildItem $PSScriptRoot -Filter bin -Recurse -Directory -Depth 3
         $binDirs | ForEach-Object {
             Write-Host "Removing: $($_.FullName)" -ForegroundColor Green
             Remove-Item $_.FullName -Recurse -Force -ErrorAction Continue
         }
 
-        $objDirs = Get-ChildItem $PSScriptRoot -Filter obj -Recurse -Directory
+        $objDirs = Get-ChildItem $PSScriptRoot -Filter obj -Recurse -Directory -Depth 3
         $objDirs | ForEach-Object {
             Write-Host "Removing: $($_.FullName)" -ForegroundColor Green
             Remove-Item $_.FullName -Recurse -Force -ErrorAction Continue
