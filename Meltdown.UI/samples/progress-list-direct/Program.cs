@@ -1,10 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 Console.WriteLine("Starting progress-list sample...");
 
-var comm = await HMDev.NodeUI.NodeUI.StartAsync(p => p with
-{
-    ClientApp = Path.Combine(p.BaseDir, "CLI", "dist/bundle.js"),
-});
+var comm = await HMDev.NodeUI.NodeUI.StartAsync();
 await comm.ProgressReporter.Command("root", "setVariant", ["simple"]);
 
 int heartbeat = 0;

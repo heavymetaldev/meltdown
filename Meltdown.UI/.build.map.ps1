@@ -60,6 +60,11 @@ $targets = @{
         $sampleProjects = Get-ChildItem -Path $samplePath -Filter *.csproj -Recurse -Depth 1
         foreach ($project in $sampleProjects) {
             $projectPath = $project.FullName
+            $csproj = (Get-Content $projectPath) | Out-String
+            if ($csproj -notmatch "<PackageReference Include=""Meltdown.UI""") {
+                write-host "Skipping project: $projectPath because it doesn't containt package reference to Meltdown.UI" -ForegroundColor Yellow
+                continue
+            } 
             Write-Host "Updating project: $projectPath" -ForegroundColor Green
             dotnet add $projectPath package "Meltdown.UI" --prerelease -s "$PSScriptRoot/dist/nuget"
             Write-Host "Building project: $projectPath" -ForegroundColor Green
