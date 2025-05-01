@@ -16,7 +16,7 @@ export function cli() {
 
 function Root() {
   const variants = ["simple", "default"];
-  const [variant, setVariant] = React.useState("default");
+  const [variant, setVariant] = React.useState("simple");
 
   const keyMap = {
     quit: { input: "q" },
@@ -59,3 +59,6 @@ function chooseApp(variant: string, knownVariants: string[]): JSX.Element {
     </>
   );
 }
+
+export { commandEmitter } from "./utils/commands.js";
+export { progressEmitter } from "./utils/commands.js";
