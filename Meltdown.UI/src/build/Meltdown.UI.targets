@@ -5,9 +5,9 @@
   </PropertyGroup>
 
 
-  <Target Name="BuildNode" AfterTargets="Build">
-    <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
+  <!--<Target Name="BuildNode" AfterTargets="Build">
+    --><!-- As part of publishing, ensure the JS resources are freshly built in production mode --><!--
     <Exec WorkingDirectory="$(OutputPath)/CLI" Command="npm install" Condition="'$(NoNpm)'!='true'" />
     <Exec WorkingDirectory="$(OutputPath)/CLI" Command="npm run build" Condition="'$(NoNpm)'!='true'" />
-  </Target>
+  </Target>-->
 </Project>

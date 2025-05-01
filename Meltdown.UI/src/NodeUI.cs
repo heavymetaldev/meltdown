@@ -33,7 +33,7 @@ public class NodeUI
         var runtime = "win-x64";
         var libnodePath = Path.Combine(baseDir, $"runtimes/{runtime}/native", "libnode.dll");
 
-        var clientApp = Path.Combine(baseDir, "CLI", "node-ui.js");
+        var clientApp = Path.Combine(baseDir, "CLI", "dist", "bundle.mjs");
 
         return new Paths { ClientApp = clientApp, LibNode = libnodePath, BaseDir = baseDir };
     }

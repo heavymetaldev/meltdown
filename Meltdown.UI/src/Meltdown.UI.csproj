@@ -7,7 +7,7 @@
     <PreserveCompilationContext>true</PreserveCompilationContext>
     <NodeApiAssemblyJSModuleType>esm</NodeApiAssemblyJSModuleType>
     <VersionPrefix>1.0.2</VersionPrefix>
-    <VersionSuffix>beta011</VersionSuffix>
+    <VersionSuffix>beta014</VersionSuffix>
     <DebugType>embedded</DebugType>
     <IncludeSymbols>true</IncludeSymbols>
     <!-- <SymbolPackageFormat>snupkg</SymbolPackageFormat> -->
@@ -20,26 +20,26 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="CLI/**" />
-    <Content Include="CLI/*">
+    <!--<Content Include="CLI/*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Pack>true</Pack>
       <PackageCopyToOutput>true</PackageCopyToOutput>
-    </Content>
-    <Content Include="CLI/utils/*">
+    </Content>-->
+    <!--<Content Include="CLI/utils/*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Pack>true</Pack>
       <PackageCopyToOutput>true</PackageCopyToOutput>
-    </Content>
+    </Content>-->
   </ItemGroup>
   <ItemGroup>
-    <None Remove="CLI\dist\bundle.js" />
-    <None Remove="CLI\dist\vendors-node_modules_tuir_build_devtools_js.bundle.js" />
+    <None Remove="CLI\dist\bundle.mjs" />
+    <None Remove="CLI\dist\vendors-node_modules_tuir_build_devtools_js.bundle.mjs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="CLI\dist\bundle.js">
+    <Content Include="CLI\dist\bundle.mjs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="CLI\dist\vendors-node_modules_tuir_build_devtools_js.bundle.js">
+    <Content Include="CLI\dist\vendors-node_modules_tuir_build_devtools_js.bundle.mjs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="import.cjs">
