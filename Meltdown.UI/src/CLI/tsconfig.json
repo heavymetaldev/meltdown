@@ -1,9 +1,10 @@
 {
   "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
     "target": "es2024",
     "lib": ["es2024"],
-    "module": "nodenext",
-    "moduleResolution": "node16",
+    "module": "NodeNext",
+    "moduleResolution": "nodenext",
     "esModuleInterop": true,
 
     "strict": true,
@@ -12,5 +13,10 @@
     "jsx": "react",
     "outDir": "build",
     "sourceMap": true
+  },
+  "ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": "node",
+    "experimentalResolver": true
   }
 }
