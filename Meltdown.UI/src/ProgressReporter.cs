@@ -43,16 +43,15 @@ public class ProgressReporter(IHubContext<UIHub, IUIClient> uiHub) : IProgressRe
 }
 
 
-class DirectProgressReporter(NodeEmbeddingThreadRuntime nodeRuntime) : IProgressReporter
+class DirectProgressReporter(NodeEmbeddingThreadRuntime nodeRuntime, string commandsModule = "./build/utils/commands.js") : IProgressReporter
 {
-    const string CommmandsModule = "./build/utils/commands.js";
     public async Task Log(string fullPath, string message)
     {
         await nodeRuntime.RunAsync(async () =>
         {
             try
             {
-                var module = await nodeRuntime.ImportAsync(CommmandsModule, esModule: true);
+                var module = await nodeRuntime.ImportAsync(commandsModule, esModule: true);
                 var emitter = module.GetProperty("progressEmitter");
                 emitter.CallMethod("log", fullPath, message);
             }
@@ -69,7 +68,7 @@ class DirectProgressReporter(NodeEmbeddingThreadRuntime nodeRuntime) : IProgress
         {
             try
             {
-                var module = await nodeRuntime.ImportAsync(CommmandsModule, esModule: true);
+                var module = await nodeRuntime.ImportAsync(commandsModule, esModule: true);
                 var emitter = module.GetProperty("progressEmitter");
                 emitter.CallMethod("update", fullPath, state.ToString().ToLower(), status);
             }
@@ -86,7 +85,7 @@ class DirectProgressReporter(NodeEmbeddingThreadRuntime nodeRuntime) : IProgress
         {
             try
             {
-                var module = await nodeRuntime.ImportAsync(CommmandsModule, esModule: true);
+                var module = await nodeRuntime.ImportAsync(commandsModule, esModule: true);
                 var emitter = module.GetProperty("progressEmitter");
                 emitter.CallMethod("command", fullPath, command, JsonSerializer.Serialize(args));
             }

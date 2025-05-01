@@ -61,7 +61,7 @@ public class NodeUI
                     MainScript = "globalThis.require = require('module').createRequire(process.execPath);\n",
                 });
 
-            var progressReporter = new DirectProgressReporter(nodejsRuntime);
+            var progressReporter = new DirectProgressReporter(nodejsRuntime, "./" + paths.EntryPoint);
             Console.SetOut(new ProgressWriter(progressReporter));
 
             var callback = new CommandCallback();
@@ -71,6 +71,10 @@ public class NodeUI
                 {
                     var module = await nodejsRuntime.ImportAsync("./" + paths.EntryPoint, esModule: true);
                     var invoker = module.GetProperty(Exports.CommandEmitter);
+                    if (invoker.IsNullOrUndefined())
+                    {
+                        throw new Exception($"missing export of '{Exports.CommandEmitter}' in {paths.EntryPoint}");
+                    }
                     callback.Register(invoker);
 
                     module.CallMethod(Exports.MainMethod);

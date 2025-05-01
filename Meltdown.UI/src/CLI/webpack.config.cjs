@@ -4,7 +4,7 @@ const { experiments } = require("webpack");
 const config = {
   mode: "development",
   context: path.resolve(__dirname),
-  entry: "./build/app.js",
+  entry: "./build/cli.js",
   target: "node",
   experiments: {
     outputModule: true
@@ -27,6 +27,8 @@ const config = {
   output: {
     path: path.resolve(__dirname, "./dist"),
     filename: "bundle.js",
+    module: true,
+    libraryTarget: "module"
   },
 };
 

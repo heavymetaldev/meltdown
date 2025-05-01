@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -32,6 +32,16 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <None Remove="CLI\dist\bundle.js" />
+    <None Remove="CLI\dist\vendors-node_modules_tuir_build_devtools_js.bundle.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="CLI\dist\bundle.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="CLI\dist\vendors-node_modules_tuir_build_devtools_js.bundle.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="import.cjs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Pack>true</Pack>

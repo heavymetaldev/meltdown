@@ -11,7 +11,7 @@
     "build": "tsc",
     "start": "node --loader ts-node/esm ./app.ts",
     "start:dist": "npm run build && node ./build/index.js && echo 'DONE'",
-    "bundle": "webpack",
+    "bundle": "npm run build && webpack",
     "start:bundle": "npm run bundle && node ./dist/bundle.js"
   },
   "devDependencies": {
