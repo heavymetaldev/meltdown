@@ -18,6 +18,7 @@
     "@types/node": "^22.15.3",
     "@types/react": "^19.1.2",
     "@types/webpack": "^5.28.5",
+    "react-devtools-core": "^4.28.5",
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
