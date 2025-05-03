@@ -1,7 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 Console.WriteLine("Starting progress-list sample...");
 
-var comm = await HMDev.NodeUI.NodeUI.StartAsync();
+var comm = await Meltdown.UI.NodeUI.StartAsync();
 await comm.ProgressReporter.Command("root", "setVariant", ["simple"]);
 
 int heartbeat = 0;

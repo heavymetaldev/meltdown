@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 
-namespace HMDev.NodeUI;
+namespace Meltdown.UI;
 
 public interface IUIClient
 {

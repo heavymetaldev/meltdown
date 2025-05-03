@@ -2,10 +2,10 @@
 using Microsoft.JavaScript.NodeApi;
 using Microsoft.JavaScript.NodeApi.Runtime;
 using System.Text.Json;
-using static HMDev.NodeUI.NodeUI;
-using static HMDev.NodeUI.SignalRQueue;
+using static Meltdown.UI.NodeUI;
+using static Meltdown.UI.SignalRQueue;
 
-namespace HMDev.NodeUI;
+namespace Meltdown.UI;
 
 public enum ProgressState
 {

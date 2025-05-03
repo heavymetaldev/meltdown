@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Hosting;
 
-namespace HMDev.NodeUI;
+namespace Meltdown.UI;
 
 public class SignalRQueue
 {

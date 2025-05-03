@@ -1,11 +1,7 @@
-﻿using Meltdown.UI;
-using Microsoft.JavaScript.NodeApi;
-using Microsoft.JavaScript.NodeApi.Runtime;
-using System.Diagnostics;
+﻿using Microsoft.JavaScript.NodeApi.Runtime;
 using System.Reflection;
-using static HMDev.NodeUI.SignalRQueue;
 
-namespace HMDev.NodeUI;
+namespace Meltdown.UI;
 
 public class NodeUI
 {

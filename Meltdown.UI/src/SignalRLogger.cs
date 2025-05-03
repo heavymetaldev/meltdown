@@ -1,6 +1,6 @@
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 
-namespace HMDev.NodeUI;
+namespace Meltdown.UI;
 
 public class SignalRLogger(SignalRQueue signalr, string categoryName) : ILogger
 {

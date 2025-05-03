@@ -7,7 +7,7 @@
     <PreserveCompilationContext>true</PreserveCompilationContext>
     <NodeApiAssemblyJSModuleType>esm</NodeApiAssemblyJSModuleType>
     <VersionPrefix>1.0.2</VersionPrefix>
-    <VersionSuffix>beta020</VersionSuffix>
+    <VersionSuffix>beta026</VersionSuffix>
     <DebugType>embedded</DebugType>
     <IncludeSymbols>true</IncludeSymbols>
     <!-- <SymbolPackageFormat>snupkg</SymbolPackageFormat> -->
@@ -51,11 +51,8 @@
   <ItemGroup>
     <Content Include="build\$(PackageId).targets" PackagePath="%(Identity)" />
   </ItemGroup>
-  <!--<Target Name="BuildNode" AfterTargets="Build">
-    -->
-  <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
-  <!--
+  <Target Name="BuildNode" BeforeTargets="Compile">
     <Exec WorkingDirectory="CLI" Command="npm install" Condition="'$(NoNpm)'!='true'" />
-    <Exec WorkingDirectory="CLI" Command="npm run build" Condition="'$(NoNpm)'!='true'" />
-  </Target>-->
+    <Exec WorkingDirectory="CLI" Command="npm run bundle" Condition="'$(NoNpm)'!='true'" />
+  </Target>
 </Project>

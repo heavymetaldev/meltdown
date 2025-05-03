@@ -1,7 +1,7 @@
 ﻿using Microsoft.JavaScript.NodeApi;
 using System.Text;
 
-namespace HMDev.NodeUI;
+namespace Meltdown.UI;
 
 public class CommandCallback
 {
