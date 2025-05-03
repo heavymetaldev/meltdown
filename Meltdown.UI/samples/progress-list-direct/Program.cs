@@ -4,12 +4,17 @@ Console.WriteLine("Starting progress-list sample...");
 var comm = await Meltdown.UI.NodeUI.StartAsync();
 await comm.ProgressReporter.Command("root", "setVariant", ["simple"]);
 
-int heartbeat = 0;
-while (true)
+IEnumerable<string> GatherData()
 {
-    // console will be redirected to NodeUI
-    Console.WriteLine($"Heartbeat {heartbeat++}");
-    // but you can also use the progress reporter directly
-    await comm.ProgressReporter.Log("root", $"Heartbeat {heartbeat}");
-    await Task.Delay(1000);
+    for (int i = 0; i < 100; i++)
+    {
+        Thread.Sleep(100);
+        Console.WriteLine($"progress: {i}%");
+        yield return $"Item {i}";
+    }
 }
+
+// you can simply use console.writeline
+Console.WriteLine("Gathering data...");
+var data = GatherData().ToList();
+Console.WriteLine("Got it!");

@@ -9,10 +9,12 @@ IEnumerable<string> GatherData()
     for (int i = 0; i < 100; i++)
     {
         Thread.Sleep(100);
+        Console.WriteLine($"progress: {i}%");
         yield return $"Item {i}";
     }
 }
 
+// you can simply use console.writeline
 Console.WriteLine("Gathering data...");
-var data = GatherData();
+var data = GatherData().ToList();
 Console.WriteLine("Got it!");
