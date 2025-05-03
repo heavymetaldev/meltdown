@@ -18,18 +18,18 @@
     "@types/node": "^22.15.3",
     "@types/react": "^19.1.2",
     "@types/webpack": "^5.28.5",
-    "bufferutil": "^4.0.9",
-    "react": "^18.2.0",
-    "react-devtools-core": "^4.28.5",
-    "react-signalr": "^0.2.24",
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
-    "tuir": "github:qbikez/ink#tuir",
     "typescript": "^5.8.3",
-    "utf-8-validate": "^5.0.10",
     "webpack": "^5.99.7",
     "webpack-cli": "^6.0.1",
     "webpack-node-externals": "^3.0.0"
+  },
+  "dependencies": {
+    "cli-boxes": "^4.0.1",
+    "ink-components": "github:qbikez/ink-components",
+    "react": "^18.3.1",
+    "tuir": "github:qbikez/ink#tuir"
   }
 }
