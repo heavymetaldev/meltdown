@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="CLI/**" />
+    <Content Include="CLI/*" />
     <!--<Content Include="CLI/*">
 
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
