@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -7,7 +7,7 @@
     <PreserveCompilationContext>true</PreserveCompilationContext>
     <NodeApiAssemblyJSModuleType>esm</NodeApiAssemblyJSModuleType>
     <VersionPrefix>1.0.2</VersionPrefix>
-    <VersionSuffix>beta026</VersionSuffix>
+    <VersionSuffix>beta028</VersionSuffix>
     <DebugType>embedded</DebugType>
     <IncludeSymbols>true</IncludeSymbols>
     <!-- <SymbolPackageFormat>snupkg</SymbolPackageFormat> -->
@@ -21,14 +21,22 @@
   <ItemGroup>
     <Compile Remove="CLI/**" />
     <!--<Content Include="CLI/*">
+
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+
       <Pack>true</Pack>
+
       <PackageCopyToOutput>true</PackageCopyToOutput>
+
     </Content>-->
     <!--<Content Include="CLI/utils/*">
+
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+
       <Pack>true</Pack>
+
       <PackageCopyToOutput>true</PackageCopyToOutput>
+
     </Content>-->
   </ItemGroup>
   <ItemGroup>
@@ -38,9 +46,13 @@
   <ItemGroup>
     <Content Include="CLI\dist\bundle.mjs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Pack>true</Pack>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
     </Content>
     <Content Include="CLI\dist\vendors-node_modules_tuir_build_devtools_js.bundle.mjs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Pack>true</Pack>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
     </Content>
     <Content Include="import.cjs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
