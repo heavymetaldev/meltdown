@@ -10,12 +10,14 @@ export function cli() {
   var root = (
     <WithProgress>
       <WithConsole autoRefreshInterval={1000}>
-        <Root /> 
+        <Root />
       </WithConsole>
     </WithProgress>
-  )
+  );
   render(root, {
     patchConsole: false,
-    debug: false
+    debug: false,
   });
 }
+
+export { commandEmitter, progressEmitter } from "./ink-components.js";
