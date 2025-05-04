@@ -17,6 +17,9 @@
   "ts-node": {
     "esm": true,
     "experimentalSpecifierResolution": "node",
-    "experimentalResolver": true
+    "experimentalResolver": true,
+    "compilerOptions": {
+      "noEmit": true,
+    }
   }
 }

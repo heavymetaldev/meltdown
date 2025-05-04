@@ -3,7 +3,7 @@ import {
   ScrollingBox,
   progressEmitter,
   ProgressItemState,
-} from "../ink-components.js";
+} from "../dependencies/ink-components.js";
 
 export function SimpleLog() {
   const [log, setLog] = React.useState<string[]>(["nothing to show"]);

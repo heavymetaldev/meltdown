@@ -6,16 +6,19 @@ import {
   Commands,
   KeyMap,
   Node,
+  StdinState,
+  Text,
   useKeymap,
   useNodeMap,
-} from "../tuir.js";
+  Viewport,
+} from "../dependencies/tuir.js";
 import {
   useProgress,
   ProgressVisualiser,
   Frame,
   ScrollingBox,
   commandEmitter,
-} from "../ink-components.js";
+} from "../dependencies/ink-components.js";
 import cliBoxes from "cli-boxes";
 
 export function MasterDetail() {

@@ -53,6 +53,20 @@ $targets = @{
         }
     }
 
+    "update-ink-components" = {
+        param([switch][bool]$withNodeModules = $false)
+        $inkComponents = "$psscriptroot/../../ink-components"
+        if ($withNodeModules) {
+            cp $inkComponents "$psscriptRoot/src/CLI/node_modules/" -Force -Recurse
+        }
+        cp "$inkComponents/samples/cli-sample/*" "$psscriptRoot/src/CLI" -Verbose -Force -Recurse
+        $deps = Get-ChildItem "$PSScriptRoot/src/CLI/dependencies" -File
+        $deps | %{
+            $name = $_.BaseName
+            "export * from  `"$name`";" | Out-File "$PSScriptRoot/src/CLI/dependencies/$name.ts" -Force
+        }
+    }
+
     "update-samples" = {
         qbuild publish
 

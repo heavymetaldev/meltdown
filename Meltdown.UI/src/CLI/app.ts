@@ -1,3 +1,8 @@
-import { cli } from "./cli.js";
+import { cli, progressEmitter, commandEmitter } from "./cli.js";
 
-cli();
+cli({
+  init: () => {
+    progressEmitter.log("init", "Hello World!");
+    progressEmitter.log("init", `progress: ${progressEmitter.id} command:${commandEmitter.id}`);
+  },
+});

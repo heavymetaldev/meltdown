@@ -9,20 +9,24 @@ import {
   useKeymap,
   usePages,
   Viewport,
-} from "./tuir.js";
-import {
-  PageIndicator,
-  progressEmitter
-} from "./ink-components.js";
+} from "./dependencies/tuir.js";
+import { PageIndicator, progressEmitter } from "./dependencies/ink-components.js";
 import { MasterDetail } from "./Pages/MasterDetail.js";
 import { SimpleLog } from "./Pages/Simple.js";
 
 type PagesReturn = ReturnType<typeof usePages>;
 type PagesControl = PagesReturn["control"];
 
-export function Root() {
-  const variants = ["Simple", "MasterDetail"];
-  const [variant, setVariant] = React.useState("simple");
+const VARIANTS = ["simple", "master-detail"] as const;
+type RootVariant = (typeof VARIANTS)[number];
+
+export function Root({
+  init,
+  variant: initialVariant,
+}: { init?: () => void; variant?: RootVariant } = {}) {
+  initialVariant ??= "simple";
+  const variants = VARIANTS as unknown as string[];
+  const [variant, setVariant] = React.useState(initialVariant);
 
   const { pageView, control: pageControl } = usePages(variants.length);
 
@@ -36,17 +40,22 @@ export function Root() {
     pageControl.goToPage(index);
   }, [variant]);
 
-  
   useEffect(() => {
     progressEmitter.on(
       "command",
       (command: string, path: string, args: string[]) => {
         if (command === "setVariant") {
-          setVariant(args[0]);
+          setVariant(args[0] as RootVariant);
         }
       }
     );
   }, [progressEmitter]);
+
+  useEffect(() => {
+    if (init) {
+      init();
+    }
+  }, []);
 
   return (
     <Viewport flexDirection="column">
