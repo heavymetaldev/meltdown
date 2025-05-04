@@ -1,16 +1,12 @@
-import React, { useEffect } from "react";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Cli,
   Commands,
   KeyMap,
   Node,
-  StdinState,
-  Text,
   useKeymap,
   useNodeMap,
-  Viewport,
 } from "../dependencies/tuir.js";
 import {
   useProgress,
@@ -55,14 +51,6 @@ export function MasterDetail() {
       console.warn("Command invoked!", args);
     },
   } satisfies Commands;
-
-  useEffect(() => {
-    progress.update(
-      "main",
-      "connected",
-      "The Details window doesn't know it's height until it's focused. Hit TAB to focus it."
-    );
-  }, []);
 
   return (
     <Box flexDirection="column">

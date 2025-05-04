@@ -3,6 +3,7 @@ import {
   ScrollingBox,
   progressEmitter,
   ProgressItemState,
+  ProgressUpdate,
 } from "../dependencies/ink-components.js";
 
 export function SimpleLog() {
@@ -13,11 +14,12 @@ export function SimpleLog() {
     };
     const updateListener = (
       path: string,
-      state: ProgressItemState,
-      status?: string,
-      details?: string
+      value: Partial<ProgressUpdate>
     ) => {
-      setLog((prevLog) => [...prevLog, `S[${path}] ${state}: ${status} (${details})`]);
+      setLog((prevLog) => [
+        ...prevLog,
+        `S[${path}] ${value.state}: ${value.status} (${value.details})`,
+      ]);
     };
 
     progressEmitter.on("log", logListener);

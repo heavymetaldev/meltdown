@@ -1,1 +1,1 @@
-export * from  "tuir";
+export * from "tuir";
