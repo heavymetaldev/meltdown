@@ -19,13 +19,13 @@ public enum ProgressState
 public interface IProgressReporter
 {
     Task Log(string fullPath, string message);
-    Task ReportProgress(string fullPath, ProgressState state, string status);
+    Task ReportProgress(string fullPath, ProgressState state, string status, int progress);
     Task Command(string fullPath, string command, string[] args);
 }
 
 public class ProgressReporter(IHubContext<UIHub, IUIClient> uiHub) : IProgressReporter
 {
-    public async Task ReportProgress(string fullPath, ProgressState state, string status)
+    public async Task ReportProgress(string fullPath, ProgressState state, string status, int progress)
     {
         await uiHub.Clients.All.HandleLog(fullPath, $"=== status: {state} ({status})");
         await uiHub.Clients.All.Progress(fullPath, state.ToString().ToLower(), status);
@@ -62,7 +62,7 @@ class DirectProgressReporter(NodeEmbeddingThreadRuntime nodeRuntime, string comm
         });
     }
 
-    public async Task ReportProgress(string fullPath, ProgressState state, string status)
+    public async Task ReportProgress(string fullPath, ProgressState state, string status, int progress)
     {
         await nodeRuntime.RunAsync(async () =>
         {
@@ -70,7 +70,13 @@ class DirectProgressReporter(NodeEmbeddingThreadRuntime nodeRuntime, string comm
             {
                 var module = await nodeRuntime.ImportAsync(commandsModule, esModule: true);
                 var emitter = module.GetProperty("progressEmitter");
-                emitter.CallMethod("update", fullPath, state.ToString().ToLower(), status);
+                var value = new JSObject(
+                [
+                    new("state", state.ToString().ToLower()),
+                    new("status", status),
+                    new("progress", progress),
+                ]);
+                emitter.CallMethod("update", fullPath, value);
             }
             catch (Exception ex)
             {
