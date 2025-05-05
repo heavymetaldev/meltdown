@@ -14,10 +14,15 @@ import {
   Frame,
   ScrollingBox,
   commandEmitter,
+  ProgressVisualiserVariant,
 } from "../dependencies/ink-components.js";
 import cliBoxes from "cli-boxes";
 
-export function MasterDetail() {
+export function MasterDetail({
+  variant,
+}: {
+  variant: ProgressVisualiserVariant;
+}) {
   const progress = useProgress();
 
   const nodeMap = [["list"], ["log"]];
@@ -59,6 +64,7 @@ export function MasterDetail() {
           <ProgressVisualiser
             progress={progress}
             onItemSelected={(i) => setSelectedItem(i)}
+            variant={variant}
           ></ProgressVisualiser>
         </Frame>
       </Node>

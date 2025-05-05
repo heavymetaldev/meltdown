@@ -31,6 +31,7 @@
   },
   "dependencies": {
     "cli-boxes": "^4.0.1",
+    "figures": "^6.1.0",
     "ink-components": "github:qbikez/ink-components",
     "react": "^18.3.1",
     "tuir": "github:qbikez/ink#tuir"

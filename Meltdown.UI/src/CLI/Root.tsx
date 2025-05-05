@@ -17,7 +17,7 @@ import { SimpleLog } from "./Pages/Simple.js";
 type PagesReturn = ReturnType<typeof usePages>;
 type PagesControl = PagesReturn["control"];
 
-const VARIANTS = ["simple", "master-detail"] as const;
+const VARIANTS = ["simple", "master-detail", "treeview"] as const;
 type RootVariant = (typeof VARIANTS)[number];
 
 export function Root({
@@ -61,7 +61,8 @@ export function Root({
     <Viewport flexDirection="column">
       <Pages pageView={pageView}>
         <SimpleLog />
-        <MasterDetail />
+        <MasterDetail variant="listView" />
+        <MasterDetail variant="treeView" />
       </Pages>
       <PageIndicator
         pageNames={variants}
