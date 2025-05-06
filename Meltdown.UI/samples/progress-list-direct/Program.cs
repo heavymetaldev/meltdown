@@ -15,7 +15,7 @@ IEnumerable<string> GatherData()
     int total = 100;
     for (int i = 0; i < total; i++)
     {
-        Thread.Sleep(100);
+        Thread.Sleep(1000);
         // but it's better to use progress reporter
         progress.ReportProgress("data", Meltdown.UI.ProgressState.Running, $"Item {i} of {total}", (int)(i/(double)total * 100));
         progress.Log($"data|{i}", $"Got Item {i} of {total}");

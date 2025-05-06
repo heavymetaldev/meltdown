@@ -5,6 +5,11 @@ namespace Meltdown.UI;
 
 public class NodeUI
 {
+    public record Options
+    {
+        public bool PatchConsole { get; set; } = true;
+        public required Paths Paths { get; set; }
+    }
     public record Paths
     {
         public required string LibNode { get; init; }
@@ -34,21 +39,18 @@ public class NodeUI
         return new Paths { ClientApp = clientApp, LibNode = libnodePath, BaseDir = baseDir };
     }
 
-    public static async Task<DirectComm> StartAsync(Func<Paths, Paths>? configure = null)
+    public static async Task<DirectComm> StartAsync(Func<Options, Options>? configure = null)
     {
-        var paths = GetPaths();
-        if (configure is not null)
-        {
-            paths = configure(paths);
-        }
+        configure ??= o => o;
+        var defaultOptions = new Options() { Paths = GetPaths() };
+        var options = configure(defaultOptions);
 
+        var paths = options.Paths;
         var nodejsPlatform = new NodeEmbeddingPlatform(new NodeEmbeddingPlatformSettings()
         {
             LibNodePath = paths.LibNode,
         });
-
-
-
+        
         try
         {
             var nodejsRuntime = nodejsPlatform.CreateThreadRuntime(paths.WorkingDirectory,
@@ -58,7 +60,10 @@ public class NodeUI
                 });
 
             var progressReporter = new DirectProgressReporter(nodejsRuntime, "./" + paths.EntryPoint);
-            Console.SetOut(new ProgressWriter(progressReporter));
+            if (options.PatchConsole)
+            {
+                Console.SetOut(new ProgressWriter(progressReporter));
+            }
 
             var callback = new CommandCallback();
             await nodejsRuntime.RunAsync(async () =>
@@ -88,7 +93,4 @@ public class NodeUI
             throw;
         }
     }
-
-    public static DirectComm Start(Func<Paths, Paths>? configure = null)
-        => StartAsync(configure).GetAwaiter().GetResult();
 }
