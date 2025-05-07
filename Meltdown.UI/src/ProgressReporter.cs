@@ -52,7 +52,7 @@ class DirectProgressReporter(NodeEmbeddingThreadRuntime nodeRuntime, string comm
             try
             {
                 var module = await nodeRuntime.ImportAsync(commandsModule, esModule: true);
-                var emitter = module.GetProperty("progressEmitter");
+                var emitter = module.GetProperty("default").GetProperty(Exports.ProgressEmitter);
                 emitter.CallMethod("log", fullPath, message);
             }
             catch (Exception ex)
@@ -69,7 +69,7 @@ class DirectProgressReporter(NodeEmbeddingThreadRuntime nodeRuntime, string comm
             try
             {
                 var module = await nodeRuntime.ImportAsync(commandsModule, esModule: true);
-                var emitter = module.GetProperty("progressEmitter");
+                var emitter = module.GetProperty("default").GetProperty(Exports.ProgressEmitter);
                 var value = new JSObject(
                 [
                     new("state", state.ToString().ToLower()),
@@ -92,7 +92,7 @@ class DirectProgressReporter(NodeEmbeddingThreadRuntime nodeRuntime, string comm
             try
             {
                 var module = await nodeRuntime.ImportAsync(commandsModule, esModule: true);
-                var emitter = module.GetProperty("progressEmitter");
+                var emitter = module.GetProperty("default").GetProperty(Exports.ProgressEmitter);
                 emitter.CallMethod("command", fullPath, command, JsonSerializer.Serialize(args));
             }
             catch (Exception ex)

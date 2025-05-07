@@ -1,4 +1,5 @@
-﻿using Microsoft.JavaScript.NodeApi.Runtime;
+﻿using Microsoft.JavaScript.NodeApi;
+using Microsoft.JavaScript.NodeApi.Runtime;
 using System.Reflection;
 
 namespace Meltdown.UI;
@@ -21,12 +22,6 @@ public class NodeUI
     }
 
     public record DirectComm(IProgressReporter ProgressReporter, ICommandDispatcher CommandDispatcher);
-
-    private class Exports
-    {
-        public const string MainMethod = "cli";
-        public const string CommandEmitter = "commandEmitter";
-    }
 
     private static Paths GetPaths()
     {
@@ -71,14 +66,15 @@ public class NodeUI
                 try
                 {
                     var module = await nodejsRuntime.ImportAsync("./" + paths.EntryPoint, esModule: true);
-                    var invoker = module.GetProperty(Exports.CommandEmitter);
+                    var defaultExport = module.GetProperty("default");
+                    var invoker = defaultExport.GetProperty(Exports.CommandEmitter);
                     if (invoker.IsNullOrUndefined())
                     {
                         throw new Exception($"missing export of '{Exports.CommandEmitter}' in {paths.EntryPoint}");
                     }
                     callback.Register(invoker);
 
-                    module.CallMethod(Exports.MainMethod);
+                    defaultExport.CallMethod(Exports.MainMethod);
                 }
                 catch (Exception ex)
                 {
@@ -94,3 +90,11 @@ public class NodeUI
         }
     }
 }
+
+class Exports
+{
+    public const string MainMethod = "cli";
+    public const string CommandEmitter = "commandEmitter";
+    public const string ProgressEmitter = "progressEmitter";
+}
+

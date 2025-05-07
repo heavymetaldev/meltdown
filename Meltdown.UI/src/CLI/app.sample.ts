@@ -1,17 +1,18 @@
-import { cli, commandEmitter, progressEmitter } from "./cli.js";
+import cli from "./cli.js";
 
-
-cli({
+cli.cli({
   init: () => {
     console.log("Hello World!");
-   progressEmitter.log("init", `progress: ${progressEmitter.id} command:${commandEmitter.id}`);
-   progressEmitter.update("init", {
-    progress: 99,
-   });
+    cli.progressEmitter.log(
+      "init",
+      "Initializing CLI..."
+    );
+    cli.progressEmitter.update("init", {
+      progress: 99,
+    });
   },
   variant: "master-detail",
 });
-
 
 // cli({
 //     init: () => {
