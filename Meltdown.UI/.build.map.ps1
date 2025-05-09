@@ -47,6 +47,12 @@ $targets = @{
                     nuget add $package -s "dist/nuget"
                 }
             }
+
+            if ($LASTEXITCODE -ne 0) {
+                Write-Host "Error: Nuget push failed" -ForegroundColor Red
+                write-host "Please check your NUGET_API_KEY environment variable" -ForegroundColor Red
+                exit $LASTEXITCODE
+            }
         }
         finally {
             popd
@@ -64,6 +70,9 @@ $targets = @{
         $inkComponents = "$psscriptroot/../../ink-components"
         if ($withNodeModules) {
             cp $inkComponents "$psscriptRoot/src/CLI/node_modules/" -Force -Recurse
+        } else {
+            cp "$inkComponents/build" "$psscriptRoot/src/CLI/node_modules/ink-components/build" -Force -Recurse
+            cp "$inkComponents/package.json" "$psscriptRoot/src/CLI/node_modules/ink-components/package.json" -Force -Recurse
         }
         if ($linkTo) {
             $buildDir = "$psscriptRoot/src/CLI/node_modules/ink-components/build"
@@ -71,6 +80,8 @@ $targets = @{
             New-Junction -path $buildDir -target "$linkTo/build" -Verbose
         }
         cp "$inkComponents/samples/cli-sample/*" "$psscriptRoot/src/CLI" -Verbose -Force -Recurse
+        
+
         $deps = Get-ChildItem "$PSScriptRoot/src/CLI/dependencies" -File
         $deps | %{
             $name = $_.BaseName
