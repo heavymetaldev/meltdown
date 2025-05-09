@@ -19,6 +19,7 @@
     "@types/react": "^19.1.2",
     "@types/webpack": "^5.28.5",
     "bufferutil": "^4.0.9",
+    "file-loader": "^6.2.0",
     "react-devtools-core": "^4.28.5",
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
