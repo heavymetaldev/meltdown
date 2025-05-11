@@ -1,9 +1,8 @@
 import React, { useEffect } from "react";
 import {
+  ProgressUpdate,
   ScrollingBox,
   progressEmitter,
-  ProgressItemState,
-  ProgressUpdate,
 } from "../dependencies/ink-components.js";
 
 export function SimpleLog() {
@@ -14,7 +13,7 @@ export function SimpleLog() {
     };
     const updateListener = (
       path: string,
-      value: Partial<ProgressUpdate>
+      value: ProgressUpdate
     ) => {
       setLog((prevLog) => [
         ...prevLog,

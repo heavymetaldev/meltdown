@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Cli,
   Commands,
   KeyMap,
   Node,
+  Text,
+  useEvent as useGlobalEvent,
   useKeymap,
   useNodeMap,
 } from "../dependencies/tuir.js";
@@ -15,6 +17,7 @@ import {
   ScrollingBox,
   commandEmitter,
   ProgressVisualiserVariant,
+  ProgressItem,
 } from "../dependencies/ink-components.js";
 import cliBoxes from "cli-boxes";
 
@@ -31,21 +34,28 @@ export function MasterDetail({
 
   const selectedProgress = progress.state.root[selectedItem];
 
-  const keyMap = {
+  const mainKeyMap = {
     quit: { input: "q" },
-    start: { input: "s" },
     tab: { key: "tab" },
   } satisfies KeyMap;
-  const { useEvent } = useKeymap(keyMap);
+  const keyMap = useKeymap(mainKeyMap);
 
-  useEvent("quit", () => {
+  keyMap.useEvent("quit", () => {
     process.exit(0);
   });
-  useEvent("start", () => {
-    commandEmitter.invokeCommand("start", selectedItem, []);
-  });
-  useEvent("tab", () => {
+  keyMap.useEvent("tab", () => {
     control.next();
+  });
+
+  
+  useGlobalEvent("KEYPRESS", (key) => {
+    if (!selectedProgress) {
+      return;
+    }
+    const command = selectedProgress.commands?.find((c) => c.key === key);
+    if (command) {
+      commandEmitter.invokeCommand(command.name, selectedItem, []);
+    }
   });
 
   const commands = {
@@ -53,12 +63,14 @@ export function MasterDetail({
       process.exit(0);
     },
     DEFAULT: async (args) => {
-      console.warn("Command invoked!", args);
+      const [command, ...rest] = args;
+      commandEmitter.invokeCommand(command, selectedItem, rest);
     },
   } satisfies Commands;
 
   return (
     <Box flexDirection="column">
+      <CommandList item={selectedProgress} />
       <Node {...register("list")}>
         <Frame height={10} borderStyle={{ ...cliBoxes.doubleSingle }}>
           <ProgressVisualiser
@@ -78,6 +90,29 @@ export function MasterDetail({
         </Frame>
       </Node>
       <Cli commands={commands}></Cli>
+    </Box>
+  );
+}
+
+function CommandList({ item }: { item: ProgressItem | undefined }) {
+  if (!item) {
+    return <Text color="red">No item selected</Text>;
+  }
+
+  return (
+    <Box flexDirection="row" columnGap={0}>
+      <Text color="green">Commands: </Text>
+      {item.commands?.map((command, index) => {
+        return (
+          <Box key={index} flexDirection="row">
+            <Text key={index} color="blue">
+              {command.key}:
+            </Text>
+            <Text color="gray">{command.name}</Text>
+            <Text> | </Text>
+          </Box>
+        );
+      })}
     </Box>
   );
 }
