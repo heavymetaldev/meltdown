@@ -7,7 +7,7 @@
     <PreserveCompilationContext>true</PreserveCompilationContext>
     <NodeApiAssemblyJSModuleType>esm</NodeApiAssemblyJSModuleType>
     <VersionPrefix>1.0.2</VersionPrefix>
-    <VersionSuffix>beta028</VersionSuffix>
+    <VersionSuffix>beta029</VersionSuffix>
     <DebugType>embedded</DebugType>
     <IncludeSymbols>true</IncludeSymbols>
     <!-- <SymbolPackageFormat>snupkg</SymbolPackageFormat> -->
@@ -54,7 +54,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Pack>true</Pack>
       <PackageCopyToOutput>true</PackageCopyToOutput>
-    </Content>  
+    </Content>
     <Content Include="import.cjs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Pack>true</Pack>
