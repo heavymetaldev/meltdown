@@ -6,8 +6,8 @@
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <PreserveCompilationContext>true</PreserveCompilationContext>
     <NodeApiAssemblyJSModuleType>esm</NodeApiAssemblyJSModuleType>
-    <VersionPrefix>1.0.2</VersionPrefix>
-    <VersionSuffix>beta029</VersionSuffix>
+    <VersionPrefix>1.0.3</VersionPrefix>
+    <VersionSuffix>beta030</VersionSuffix>
     <DebugType>embedded</DebugType>
     <IncludeSymbols>true</IncludeSymbols>
     <!-- <SymbolPackageFormat>snupkg</SymbolPackageFormat> -->
