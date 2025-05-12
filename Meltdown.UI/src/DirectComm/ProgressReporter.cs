@@ -1,6 +1,8 @@
-﻿using Microsoft.JavaScript.NodeApi;
+﻿using Meltdown.UI.SignalR;
+using Microsoft.JavaScript.NodeApi;
 using Microsoft.JavaScript.NodeApi.Runtime;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Meltdown.UI;
 
@@ -14,7 +16,11 @@ public enum ProgressState
     Error,
 }
 
-public record CommandDescription(string key, string name, string description);
+public record CommandDescription(string key, string name, string description)
+{
+    [JsonIgnore]
+    public Func<Task>? handler { get; init; }
+}
 
 public interface IProgressReporter
 {
@@ -80,12 +86,13 @@ class DirectProgressReporter(NodeEmbeddingThreadRuntime nodeRuntime, string comm
             {
                 throw;
             }
-        }); 
+        });
     }
+
 
     public async Task SetCommands(string fullPath, CommandDescription[] commands)
     {
-        await nodeRuntime.RunAsync(async () =>
+       await nodeRuntime.RunAsync(async () =>
         {
             try
             {
@@ -98,6 +105,30 @@ class DirectProgressReporter(NodeEmbeddingThreadRuntime nodeRuntime, string comm
                 throw;
             }
         });
+    }
+}
+
+public static class ProgressReporterExtensions
+{
+    public static async Task SetCommands(this IProgressReporter progressReporter, string fullPath, ICommandDispatcher commandDispatcher, CommandDescription[] commands)
+    {
+        foreach (var command in commands)
+        {
+            if (command.handler != null)
+            {
+                commandDispatcher.On(command.name, (path, @args) =>
+                {
+                    if (path == fullPath)
+                    {
+                        _ = Task.Run(async () => {
+                            await command.handler();
+                        });
+                    }
+                });
+            }
+        }
+
+        await progressReporter.SetCommands(fullPath, commands);
     }
 }
 

@@ -8,17 +8,9 @@ var dataRunning = false;
 var comm = await NodeUI.StartAsync();
 var progress = comm.ProgressReporter;
 // await comm.ProgressReporter.Command("root", "setVariant", ["master-detail"]); // master-detail is the default already
-await comm.ProgressReporter.SetCommands("data", [
-    new CommandDescription("s", "start", "start gathering data"),
-]);
-
-comm.CommandDispatcher.On("start", (path, opts) =>
-{
-    if (path == "data")
-    {
-        // as this is invoked from inside node thread, we cannot do anythng blocking here
-        Task.Run(() =>
-        {
+await comm.ProgressReporter.SetCommands("data", comm.CommandDispatcher, [
+    new CommandDescription("s", "start", "start gathering data") {
+        handler = async () => {
             if (dataRunning)
             {
                 Console.WriteLine("Already gathering data...");
@@ -29,9 +21,10 @@ comm.CommandDispatcher.On("start", (path, opts) =>
             Console.WriteLine("Gathering data...");
             var data = GatherData().ToList();
             Console.WriteLine("Got it!");
-        });
+        }
     }
-});
+]);
+
 IEnumerable<string> GatherData()
 {
     int total = 100;
