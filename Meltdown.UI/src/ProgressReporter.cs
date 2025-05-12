@@ -16,11 +16,14 @@ public enum ProgressState
     Error,
 }
 
+public record CommandDescription(string key, string name, string description);
+
 public interface IProgressReporter
 {
     Task Log(string fullPath, string message);
     Task ReportProgress(string fullPath, ProgressState state, string status, int progress);
     Task Command(string fullPath, string command, string[] args);
+    Task SetCommands(string fullPath, CommandDescription[] commands);
 }
 
 public class ProgressReporter(IHubContext<UIHub, IUIClient> uiHub) : IProgressReporter
@@ -37,6 +40,11 @@ public class ProgressReporter(IHubContext<UIHub, IUIClient> uiHub) : IProgressRe
     }
 
     public Task Command(string fullPath, string command, string[] args)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task SetCommands(string fullPath, CommandDescription[] commands)
     {
         throw new NotImplementedException();
     }
@@ -94,6 +102,23 @@ class DirectProgressReporter(NodeEmbeddingThreadRuntime nodeRuntime, string comm
                 var module = await nodeRuntime.ImportAsync(commandsModule, esModule: true);
                 var emitter = module.GetProperty("default").GetProperty(Exports.ProgressEmitter);
                 emitter.CallMethod("command", fullPath, command, JsonSerializer.Serialize(args));
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        });
+    }
+
+    public async Task SetCommands(string fullPath, CommandDescription[] commands)
+    {
+        await nodeRuntime.RunAsync(async () =>
+        {
+            try
+            {
+                var module = await nodeRuntime.ImportAsync(commandsModule, esModule: true);
+                var emitter = module.GetProperty("default").GetProperty(Exports.ProgressEmitter);
+                emitter.CallMethod("setCommands", fullPath, JsonSerializer.Serialize(commands));
             }
             catch (Exception ex)
             {

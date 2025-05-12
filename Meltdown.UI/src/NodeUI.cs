@@ -70,7 +70,7 @@ public class NodeUI
                     var invoker = defaultExport.GetProperty(Exports.CommandEmitter);
                     if (invoker.IsNullOrUndefined())
                     {
-                        throw new Exception($"missing export of '{Exports.CommandEmitter}' in {paths.EntryPoint}");
+                        throw new Exception($"missing export of 'default.{Exports.CommandEmitter}' in {paths.EntryPoint}");
                     }
                     callback.Register(invoker);
 

@@ -1,15 +1,77 @@
 import cli from "./cli.js";
 
+cli.commandEmitter.on("invoke", (command, path, args) => {
+  cli.progressEmitter.log("commands", `Command: [${path}]:${command} [${args}](${args.length})`);
+});
+
 cli.cli({
   init: () => {
     console.log("Hello World!");
     cli.progressEmitter.log(
       "init",
-      "Initializing CLI..."
+      "App initalizing..."
     );
     cli.progressEmitter.update("init", {
-      progress: 99,
+      progress: 5,
+    })
+    cli.progressEmitter.setCommands("init", JSON.stringify([
+      {
+        name: "start",
+        description: "Start the app",
+        key: "s",
+      },
+      {
+        name: "stop",
+        description: "Stop the app",
+        key: "x",
+      }
+    ]));
+    
+    cli.commandEmitter.on("invoke", (command, path, args) => {
+      switch (command) {
+        case "start":
+          cli.progressEmitter.log(
+            "init",
+            "Starting the app..."
+          );
+          cli.progressEmitter.update("init", {
+            status: "Starting",
+            state: "running",
+            progress: 50,
+          });
+          break;
+        case "stop":
+          cli.progressEmitter.log(
+            "init",
+            "Stopping the app..."
+          );
+          cli.progressEmitter.update("init", {
+            status: "Stopped",
+            state: "stopped",
+            progress: 100,
+          });
+          break;
+        default:
+          cli.progressEmitter.log(
+            "init",
+            `Unknown command: ${command}`
+          );
+          break;
+      }
     });
+
+    setTimeout(() => {
+      cli.progressEmitter.log(
+      "init",
+      "Init DONE."
+    );
+      cli.progressEmitter.update("init", {
+        state: "done",
+        status: "Running",
+        progress: 100,
+      });
+    }
+    , 1000);
   },
   variant: "master-detail",
 });
