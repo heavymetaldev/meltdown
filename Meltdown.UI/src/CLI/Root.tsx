@@ -24,7 +24,7 @@ export function Root({
   init,
   variant: initialVariant,
 }: { init?: () => void; variant?: RootVariant } = {}) {
-  initialVariant ??= "simple";
+  initialVariant ??= "master-detail";
   const variants = VARIANTS as unknown as string[];
   const [variant, setVariant] = React.useState(initialVariant);
 
