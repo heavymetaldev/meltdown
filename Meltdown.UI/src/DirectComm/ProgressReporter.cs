@@ -1,9 +1,6 @@
-﻿using Microsoft.AspNetCore.SignalR;
-using Microsoft.JavaScript.NodeApi;
+﻿using Microsoft.JavaScript.NodeApi;
 using Microsoft.JavaScript.NodeApi.Runtime;
 using System.Text.Json;
-using static Meltdown.UI.NodeUI;
-using static Meltdown.UI.SignalRQueue;
 
 namespace Meltdown.UI;
 
@@ -11,6 +8,7 @@ public enum ProgressState
 {
     Unknown,
     Pending,
+    Ready,
     Running,
     Done,
     Error,
@@ -25,31 +23,6 @@ public interface IProgressReporter
     Task Command(string fullPath, string command, string[] args);
     Task SetCommands(string fullPath, CommandDescription[] commands);
 }
-
-public class ProgressReporter(IHubContext<UIHub, IUIClient> uiHub) : IProgressReporter
-{
-    public async Task ReportProgress(string fullPath, ProgressState state, string status, int progress)
-    {
-        await uiHub.Clients.All.HandleLog(fullPath, $"=== status: {state} ({status})");
-        await uiHub.Clients.All.Progress(fullPath, state.ToString().ToLower(), status);
-    }
-
-    public async Task Log(string fullPath, string message)
-    {
-        await uiHub.Clients.All.HandleLog(fullPath, message);
-    }
-
-    public Task Command(string fullPath, string command, string[] args)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task SetCommands(string fullPath, CommandDescription[] commands)
-    {
-        throw new NotImplementedException();
-    }
-}
-
 
 class DirectProgressReporter(NodeEmbeddingThreadRuntime nodeRuntime, string commandsModule = "./build/utils/commands.js") : IProgressReporter
 {
@@ -107,7 +80,7 @@ class DirectProgressReporter(NodeEmbeddingThreadRuntime nodeRuntime, string comm
             {
                 throw;
             }
-        });
+        }); 
     }
 
     public async Task SetCommands(string fullPath, CommandDescription[] commands)

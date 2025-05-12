@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 
-namespace Meltdown.UI;
+namespace Meltdown.UI.SignalR;
 
 public interface IUIClient
 {

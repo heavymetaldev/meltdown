@@ -1,4 +1,5 @@
 ﻿using Meltdown.UI;
+using Meltdown.UI.SignalR;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 
@@ -17,6 +18,6 @@ public static class ServiceCollectionExtensions
 
         services.AddSingleton<SignalRQueue>();
         services.AddHostedService<SignalRQueueProcessor>();
-        services.AddTransient<IProgressReporter, ProgressReporter>();
+        //services.AddTransient<IProgressReporter, SignalRProgressReporter>();
     }
 }

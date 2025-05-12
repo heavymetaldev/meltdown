@@ -1,4 +1,4 @@
-﻿using Meltdown.UI;
+﻿using Meltdown.UI.SignalR;
 using Microsoft.AspNetCore.Routing;
 
 namespace Microsoft.AspNetCore.Builder;

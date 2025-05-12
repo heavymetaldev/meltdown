@@ -1,7 +1,7 @@
-﻿using Meltdown.UI;
-using System.Text;
+﻿using System.Text;
 
 namespace Meltdown.UI;
+
 public class ProgressWriter(IProgressReporter progress) : TextWriter
 {
     public override Encoding Encoding => Encoding.UTF8;

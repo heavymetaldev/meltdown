@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace Meltdown.UI;
+namespace Meltdown.UI.SignalR;
 
 public class SignalRLogger(SignalRQueue signalr, string categoryName) : ILogger
 {
@@ -12,7 +12,7 @@ public class SignalRLogger(SignalRQueue signalr, string categoryName) : ILogger
     public IDisposable BeginScope<TState>(TState state) where TState : notnull => new Scope();
     public bool IsEnabled(LogLevel logLevel) => true;
 
-    public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
+    public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
     {
         var message = formatter(state, exception);
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.JavaScript.NodeApi;
+﻿using Meltdown.UI.SignalR;
+using Microsoft.JavaScript.NodeApi;
 using Microsoft.JavaScript.NodeApi.Runtime;
 using System.Reflection;
 
@@ -21,18 +22,17 @@ public class NodeUI
         public string EntryPoint => Path.GetFileName(ClientApp);
     }
 
-    public record DirectComm(IProgressReporter ProgressReporter, ICommandDispatcher CommandDispatcher);
-
     private static Paths GetPaths()
     {
         var baseDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
         var runtime = "win-x64";
         var libnodePath = Path.Combine(baseDir, $"runtimes/{runtime}/native", "libnode.dll");
-
         var clientApp = Path.Combine(baseDir, "CLI", "dist", "bundle.mjs");
 
         return new Paths { ClientApp = clientApp, LibNode = libnodePath, BaseDir = baseDir };
     }
+
+    public record DirectComm(IProgressReporter ProgressReporter, ICommandDispatcher CommandDispatcher);
 
     public static async Task<DirectComm> StartAsync(Func<Options, Options>? configure = null)
     {

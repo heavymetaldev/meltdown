@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Hosting;
 
-namespace Meltdown.UI;
+namespace Meltdown.UI.SignalR;
 
 public class SignalRQueue
 {
@@ -14,10 +14,10 @@ public class SignalRQueue
     public bool IsEmpty() => messages.Count == 0;
 }
 
-public class SignalRQueueProcessor(SignalRQueue queue, Func<IHubContext<UIHub, IUIClient>?> contextProvider) : IHostedService
+public class SignalRQueueProcessor(SignalRQueue queue, Func<IHubContext<UIHub, IUIClient>> contextProvider) : IHostedService
 {
     private CancellationTokenSource CancellationTokenSource = new();
-    private Task? runner;
+    private Task runner;
 
     public Task StartAsync(CancellationToken cancellationToken)
     {

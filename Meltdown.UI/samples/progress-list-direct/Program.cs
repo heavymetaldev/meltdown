@@ -7,8 +7,7 @@ var dataRunning = false;
 
 var comm = await NodeUI.StartAsync();
 var progress = comm.ProgressReporter;
-await comm.ProgressReporter.Command("root", "setVariant", ["master-detail"]);
-
+// await comm.ProgressReporter.Command("root", "setVariant", ["master-detail"]); // master-detail is the default already
 await comm.ProgressReporter.SetCommands("data", [
     new CommandDescription("s", "start", "start gathering data"),
 ]);

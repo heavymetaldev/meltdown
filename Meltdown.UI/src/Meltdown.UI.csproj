@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -65,7 +65,7 @@
     <Content Include="build\$(PackageId).targets" PackagePath="%(Identity)" />
   </ItemGroup>
   <Target Name="BuildNode" BeforeTargets="Compile">
-    <Exec WorkingDirectory="CLI" Command="npm install" Condition="'$(NoNpm)'!='true'" />
+    <!--<Exec WorkingDirectory="CLI" Command="npm install" Condition="'$(NoNpm)'!='true'" />-->
     <Exec WorkingDirectory="CLI" Command="npm run bundle" Condition="'$(NoNpm)'!='true'" />
   </Target>
 </Project>
