@@ -1,7 +1,7 @@
 . $PSScriptRoot/.config-utils.ps1
 
 $targets = @{
-    "build"          = {
+    "build"                 = {
         param($ctx, [bool][switch]$noRestore)
 
         $a = @()
@@ -11,7 +11,7 @@ $targets = @{
         dotnet build @a
     }
 
-    "pack"           = {
+    "pack"                  = {
         param($ctx, [ValidateSet("debug", "release")] $configuration = "debug")
 
         $versionSuffix = get-xmlconfig "$psscriptroot/src/Meltdown.UI.csproj" -Path "Project/PropertyGroup/VersionSuffix"
@@ -27,7 +27,7 @@ $targets = @{
             --configuration $configuration --include-symbols --include-source --verbosity detailed
     }
 
-    "publish"        = {
+    "publish"               = {
         param([ValidateSet("nuget", "local")] $source = "local", [bool][switch]$skipPack = $false)
 
         pushd $PSScriptRoot
@@ -71,27 +71,33 @@ $targets = @{
         }
         $inkComponents = "$psscriptroot/../../ink-components"
         if ($withNodeModules) {
+            Write-Host "Copying ink-components to node_modules" -ForegroundColor Green
             cp $inkComponents "$psscriptRoot/src/CLI/node_modules/" -Force -Recurse
-        } else {
-            cp "$inkComponents/build" "$psscriptRoot/src/CLI/node_modules/ink-components/build" -Force -Recurse
+        }
+        else {
+            Write-Host "Copying ink-components /build to node_modules" -ForegroundColor Green
+            cp "$inkComponents/build" "$psscriptRoot/src/CLI/node_modules/ink-components/" -Force -Recurse -Verbose
             cp "$inkComponents/package.json" "$psscriptRoot/src/CLI/node_modules/ink-components/package.json" -Force -Recurse
         }
         if ($linkTo) {
+            Write-Host "Creating junction for ink-components /build" -ForegroundColor Green
             $buildDir = "$psscriptRoot/src/CLI/node_modules/ink-components/build"
             rm -r $buildDir -Verbose
             New-Junction -path $buildDir -target "$linkTo/build" -Verbose
         }
-        cp "$inkComponents/samples/cli-sample/*" "$psscriptRoot/src/CLI" -Verbose -Force -Recurse
+        Write-Host "Copying ink-components /samples to CLI" -ForegroundColor Green
+        cp "$inkComponents/samples/cli-sample/*" "$psscriptRoot/src/CLI" -Force -Recurse
         
 
         $deps = Get-ChildItem "$PSScriptRoot/src/CLI/dependencies" -File
-        $deps | %{
+        $deps | % {
+            write-host "Creating dependency file for: $($_.FullName)" -ForegroundColor Green
             $name = $_.BaseName
             "export * from `"$name`";" | Out-File "$PSScriptRoot/src/CLI/dependencies/$name.ts" -Force
         }
     }
 
-    "update-samples" = {
+    "update-samples"        = {
         qbuild publish
 
         $samplePath = "$PSScriptRoot/samples"
@@ -110,7 +116,7 @@ $targets = @{
         }
     } 
 
-    "build-samples"  = {
+    "build-samples"         = {
         $samplePath = "$PSScriptRoot/samples"
         $sampleProjects = Get-ChildItem -Path $samplePath -Filter *.csproj -Recurse -Depth 1
         foreach ($project in $sampleProjects) {
@@ -120,7 +126,7 @@ $targets = @{
         }
     }
 
-    "clean"          = {
+    "clean"                 = {
         $binDirs = Get-ChildItem $PSScriptRoot -Filter bin -Recurse -Directory -Depth 3
         $binDirs | ForEach-Object {
             Write-Host "Removing: $($_.FullName)" -ForegroundColor Green
