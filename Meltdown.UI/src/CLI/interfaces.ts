@@ -23,15 +23,6 @@ interface ProgressEmitter {
   update(path: string, value: Partial<ProgressUpdate>): void;
 
   command(path: string, command: string, argsStr: string): void;
-  //   on(event: "log", listener: (path: string, message: string) => void): this;
-  //   on(
-  //     event: "update",
-  //     listener: (path: string, value: Partial<ProgressUpdate>) => void
-  //   ): this;
-  //   on(
-  //     event: "command",
-  //     listener: (command: string, path: string, args: string[]) => void
-  //   ): this;
 }
 
 interface CommandEmitter {
