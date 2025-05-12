@@ -28,11 +28,13 @@ $targets = @{
     }
 
     "publish"        = {
-        param([ValidateSet("nuget", "local")] $source = "local")
+        param([ValidateSet("nuget", "local")] $source = "local", [bool][switch]$skipPack = $false)
 
         pushd $PSScriptRoot
         try {
-            qbuild pack
+            if (-not $skipPack) {
+                qbuild pack
+            }            
             $versionPrefix = get-xmlconfig "src/Meltdown.UI.csproj" -Path "Project/PropertyGroup/VersionPrefix"
             $versionSuffix = get-xmlconfig "src/Meltdown.UI.csproj" -Path "Project/PropertyGroup/VersionSuffix"
 
@@ -51,7 +53,7 @@ $targets = @{
             if ($LASTEXITCODE -ne 0) {
                 Write-Host "Error: Nuget push failed" -ForegroundColor Red
                 write-host "Please check your NUGET_API_KEY environment variable" -ForegroundColor Red
-                exit $LASTEXITCODE
+                throw "Nuget push failed"
             }
         }
         finally {
