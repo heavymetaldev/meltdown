@@ -2,7 +2,7 @@
 
 $targets = [ordered]@{
     "build"                 = {
-        param($_context, [bool][switch]$noRestore)
+        param([bool][switch]$noRestore)
 
         $a = @()
         if ($noRestore) {
@@ -12,7 +12,7 @@ $targets = [ordered]@{
     }
 
     "pack"                  = {
-        param($_context, [ValidateSet("debug", "release")] $configuration = "debug")
+        param([ValidateSet("debug", "release")] $configuration = "debug")
 
         $versionSuffix = get-xmlconfig "$psscriptroot/src/Meltdown.UI.csproj" -Path "Project/PropertyGroup/VersionSuffix"
         if ($versionSuffix -match "(?<part1>.*?)(?<number>\d+)$") {
