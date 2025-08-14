@@ -9,15 +9,27 @@ public static class ServiceCollectionExtensions
 {
     public static void AddNodeUI(this IServiceCollection services)
     {
-        services.AddSingleton<Func<IHubContext<UIHub, IUIClient>>>(ctx => {
+        //AddSignalRLogger(services);
+        AddDirectLogger(services);
+
+        //services.AddTransient<IProgressReporter, SignalRProgressReporter>();
+    }
+
+    private static void AddDirectLogger(IServiceCollection services)
+    {
+        services.AddSingleton<ILoggerProvider, DirectUILoggerProvider>();
+    }
+
+    private static void AddSignalRLogger(IServiceCollection services)
+    {
+        services.AddSingleton<Func<IHubContext<UIHub, IUIClient>>>(ctx =>
+        {
             var context = ctx.GetRequiredService<IHubContext<UIHub, IUIClient>>();
             return () => context;
         });
 
-        services.AddSingleton<ILoggerProvider, SignalRLoggerProvider>();
-
         services.AddSingleton<SignalRQueue>();
         services.AddHostedService<SignalRQueueProcessor>();
-        //services.AddTransient<IProgressReporter, SignalRProgressReporter>();
+        services.AddSingleton<ILoggerProvider, SignalRLoggerProvider>();
     }
 }

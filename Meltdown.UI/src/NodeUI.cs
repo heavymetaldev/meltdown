@@ -10,7 +10,7 @@ namespace Meltdown.UI;
 public class NodeUI(
     DirectComm comm,
     NodeEmbeddingThreadRuntime nodejsRuntime,
-    CommandCallback callback,
+    UICommandCallback callback,
     Paths paths)
 {
     public record Options
@@ -63,7 +63,7 @@ public class NodeUI(
             Console.SetOut(new ProgressWriter(progressReporter));
         }
 
-        var callback = new CommandCallback();
+        var callback = new UICommandCallback();
         var comm = new DirectComm(progressReporter, new DirectCommandDispatcher(callback));
 
 

@@ -2,10 +2,7 @@
 
 namespace Meltdown.UI.SignalR;
 
-/// <summary>
-/// A logger that sends logs to the UI using SignalR.
-/// </summary>
-public class SignalRLogger(SignalRQueue signalr, string categoryName) : ILogger
+public class DirectUILogger(IProgressReporter progressReporter, string categoryName) : ILogger
 {
     public class Scope : IDisposable
     {
@@ -19,12 +16,12 @@ public class SignalRLogger(SignalRQueue signalr, string categoryName) : ILogger
     {
         var message = formatter(state, exception);
 
-        signalr.Enqueue(categoryName, message);
+        progressReporter.Log(categoryName, message);
     }
 }
 
-public class SignalRLoggerProvider(SignalRQueue signalr) : ILoggerProvider
+public class DirectUILoggerProvider(IProgressReporter progressReporter) : ILoggerProvider
 {
-    public ILogger CreateLogger(string categoryName) => new SignalRLogger(signalr, categoryName);
+    public ILogger CreateLogger(string categoryName) => new DirectUILogger(progressReporter, categoryName);
     public void Dispose() { }
 }

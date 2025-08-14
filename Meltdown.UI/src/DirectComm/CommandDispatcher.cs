@@ -3,12 +3,25 @@ using System.Text;
 
 namespace Meltdown.UI.SignalR;
 
+
+/// <summary>
+/// Interface for command dispatcher.
+/// The command dispatcher is used to register commands on the .NET side that can be invoked from the node.js side.
+/// </summary>
 public interface ICommandDispatcher
 {
+    /// <summary>
+    /// Register a command on the .NET side that can be invoked from the node.js side.
+    /// </summary>
+    /// <param name="command">The command to register.</param>
+    /// <param name="action">The action to invoke when the command is invoked.</param>
     void On(string command, Action<string, string[]> action);
 }
 
-public class DirectCommandDispatcher(CommandCallback callback) : ICommandDispatcher
+/// <summary>
+/// Direct command dispatcher that uses the UICommandCallback (direct nodejs process communication)
+/// </summary>
+public class DirectCommandDispatcher(UICommandCallback callback) : ICommandDispatcher
 {
     public void On(string command, Action<string, string[]> action)
     {
@@ -22,11 +35,22 @@ public class DirectCommandDispatcher(CommandCallback callback) : ICommandDispatc
     }
 }
 
-public class CommandCallback
+/// <summary>
+/// Command callback class that allows the node.js side to invoke commands on the .NET side.
+/// usage in node.js:
+/// commandEmitter.invokeCommand("doSomething", "path|whatever", ["arg1", "arg2"]);
+/// </summary>
+public class UICommandCallback
 {
     public event Action<string, string, string[]>? OnCommand;
     
-    public void Register(JSValue emitter) => emitter.CallMethod("on", "invoke", JSValue.CreateFunction("invokeCommand", Invoke));
+    /// <summary>
+    /// Register the command on the node.js side.
+    /// </summary>
+    /// <param name="emitter">The command emitter (i.e. CommandEmitter exported from the node.js side)</param>
+    public void Register(JSValue emitter)
+        // the command emitter on js side emits one event called "invoke" with the command name, path, and an array of arguments
+        => emitter.CallMethod("on", "invoke", JSValue.CreateFunction("invokeCommand", Invoke));
 
     private JSValue Invoke(JSCallbackArgs args)
     {

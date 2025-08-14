@@ -22,12 +22,36 @@ public record CommandDescription(string key, string name, string description)
     public Func<Task>? handler { get; init; }
 }
 
+
+/// <summary>
+/// The progress reporter is used to report progress to the node.js side.
+/// </summary>
 public interface IProgressReporter
 {
+    /// <summary>
+    /// Log a message to the node.js side.
+    /// </summary>
     Task Log(string fullPath, string message);
+
+    /// <summary>
+    /// Report progress to the node.js side.
+    /// </summary>
     Task ReportProgress(string fullPath, ProgressState state, string status, int progress);
-    Task Command(string fullPath, string command, string[] args);
-    Task SetCommands(string fullPath, CommandDescription[] commands);
+
+    /// <summary>
+    /// Execute a command on the node.js side.
+    /// </summary>
+    /// <param name="fullPath">The full path of the node.js module to execute the command on.</param>
+    /// <param name="command">The command to execute.</param>
+    /// <param name="args">The arguments to pass to the command.</param>
+    Task InvokeUICommand(string fullPath, string command, string[] args);
+
+    /// <summary>
+    /// Set the commands that are available to the node.js side.
+    /// </summary>
+    /// <param name="fullPath">The full path of the node.js module to set the commands on.</param>
+    /// <param name="commands">The commands to set.</param>
+    Task ExposeServerCommands(string fullPath, CommandDescription[] commands);
 }
 
 class DirectProgressReporter(NodeEmbeddingThreadRuntime nodeRuntime, string commandsModule = "./build/utils/commands.js") : IProgressReporter
@@ -72,7 +96,7 @@ class DirectProgressReporter(NodeEmbeddingThreadRuntime nodeRuntime, string comm
         });
     }
 
-    public async Task Command(string fullPath, string command, string[] args)
+    public async Task InvokeUICommand(string fullPath, string command, string[] args)
     {
         await nodeRuntime.RunAsync(async () =>
         {
@@ -89,8 +113,7 @@ class DirectProgressReporter(NodeEmbeddingThreadRuntime nodeRuntime, string comm
         });
     }
 
-
-    public async Task SetCommands(string fullPath, CommandDescription[] commands)
+    public async Task ExposeServerCommands(string fullPath, CommandDescription[] commands)
     {
        await nodeRuntime.RunAsync(async () =>
         {
@@ -110,7 +133,13 @@ class DirectProgressReporter(NodeEmbeddingThreadRuntime nodeRuntime, string comm
 
 public static class ProgressReporterExtensions
 {
-    public static async Task SetCommands(this IProgressReporter progressReporter, string fullPath, ICommandDispatcher commandDispatcher, CommandDescription[] commands)
+    public static async Task ExposeServerCommands(this IProgressReporter progressReporter, string fullPath, ICommandDispatcher commandDispatcher, CommandDescription[] commands)
+    {
+        commandDispatcher.RegisterCommands(fullPath, commands);
+        await progressReporter.ExposeServerCommands(fullPath, commands);
+    }
+
+    private static void RegisterCommands(this ICommandDispatcher commandDispatcher, string fullPath, CommandDescription[] commands)
     {
         foreach (var command in commands)
         {
@@ -120,15 +149,14 @@ public static class ProgressReporterExtensions
                 {
                     if (path == fullPath)
                     {
-                        _ = Task.Run(async () => {
+                        _ = Task.Run(async () =>
+                        {
                             await command.handler();
                         });
                     }
                 });
             }
         }
-
-        await progressReporter.SetCommands(fullPath, commands);
     }
 }
 

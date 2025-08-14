@@ -3,6 +3,11 @@ using Microsoft.Extensions.Hosting;
 
 namespace Meltdown.UI.SignalR;
 
+/// <summary>
+/// Queue for messages to be sent to the UI.
+/// We don't want to block the main thread when sending messages to the UI.
+/// So we use a queue and a background service to process it.
+/// </summary>
 public class SignalRQueue
 {
     public record Message(string categoryName, string message);
@@ -14,10 +19,13 @@ public class SignalRQueue
     public bool IsEmpty() => messages.Count == 0;
 }
 
+/// <summary>
+/// Background service to process the queue and send messages to the UI.
+/// </summary>
 public class SignalRQueueProcessor(SignalRQueue queue, Func<IHubContext<UIHub, IUIClient>> contextProvider) : IHostedService
 {
     private CancellationTokenSource CancellationTokenSource = new();
-    private Task runner;
+    private Task? runner;
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
@@ -43,7 +51,6 @@ public class SignalRQueueProcessor(SignalRQueue queue, Func<IHubContext<UIHub, I
         {
             try
             {
-
                 var context = contextProvider();
                 if (context is not null)
                 {
