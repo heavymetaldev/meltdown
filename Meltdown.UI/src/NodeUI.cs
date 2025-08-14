@@ -1,11 +1,17 @@
 ﻿using Meltdown.UI.SignalR;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.JavaScript.NodeApi;
 using Microsoft.JavaScript.NodeApi.Runtime;
 using System.Reflection;
+using static Meltdown.UI.NodeUI;
 
 namespace Meltdown.UI;
 
-public class NodeUI
+public class NodeUI(
+    DirectComm comm,
+    NodeEmbeddingThreadRuntime nodejsRuntime,
+    CommandCallback callback,
+    Paths paths)
 {
     public record Options
     {
@@ -22,19 +28,19 @@ public class NodeUI
         public string EntryPoint => Path.GetFileName(ClientApp);
     }
 
-    private static Paths GetPaths()
-    {
-        var baseDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
-        var runtime = "win-x64";
-        var libnodePath = Path.Combine(baseDir, $"runtimes/{runtime}/native", "libnode.dll");
-        var clientApp = Path.Combine(baseDir, "CLI", "dist", "bundle.mjs");
-
-        return new Paths { ClientApp = clientApp, LibNode = libnodePath, BaseDir = baseDir };
-    }
-
+    public DirectComm Comm => comm;
     public record DirectComm(IProgressReporter ProgressReporter, ICommandDispatcher CommandDispatcher);
 
     public static async Task<DirectComm> StartAsync(Func<Options, Options>? configure = null)
+    {
+        var nodeUi = Prepare(configure);
+
+        await nodeUi.RunAsync();
+
+        return nodeUi.Comm;
+    }
+
+    public static NodeUI Prepare(Func<Options, Options>? configure)
     {
         configure ??= o => o;
         var defaultOptions = new Options() { Paths = GetPaths() };
@@ -45,50 +51,59 @@ public class NodeUI
         {
             LibNodePath = paths.LibNode,
         });
-        
-        try
-        {
-            var nodejsRuntime = nodejsPlatform.CreateThreadRuntime(paths.WorkingDirectory,
-                new NodeEmbeddingRuntimeSettings
-                {
-                    MainScript = "globalThis.require = require('module').createRequire(process.execPath);\n",
-                });
 
-            var progressReporter = new DirectProgressReporter(nodejsRuntime, "./" + paths.EntryPoint);
-            if (options.PatchConsole)
+        var nodejsRuntime = nodejsPlatform.CreateThreadRuntime(paths.WorkingDirectory,
+            new NodeEmbeddingRuntimeSettings
             {
-                Console.SetOut(new ProgressWriter(progressReporter));
-            }
-
-            var callback = new CommandCallback();
-            await nodejsRuntime.RunAsync(async () =>
-            {
-                try
-                {
-                    var module = await nodejsRuntime.ImportAsync("./" + paths.EntryPoint, esModule: true);
-                    var defaultExport = module.GetProperty("default");
-                    var invoker = defaultExport.GetProperty(Exports.CommandEmitter);
-                    if (invoker.IsNullOrUndefined())
-                    {
-                        throw new Exception($"missing export of 'default.{Exports.CommandEmitter}' in {paths.EntryPoint}");
-                    }
-                    callback.Register(invoker);
-
-                    defaultExport.CallMethod(Exports.MainMethod);
-                }
-                catch (Exception ex)
-                {
-                    throw;
-                }
+                MainScript = "globalThis.require = require('module').createRequire(process.execPath);\n",
             });
-
-            return new(progressReporter, new DirectCommandDispatcher(callback));
-        }
-        catch (Exception ex)
+        var progressReporter = new DirectProgressReporter(nodejsRuntime, "./" + paths.EntryPoint);
+        if (options.PatchConsole)
         {
-            throw;
+            Console.SetOut(new ProgressWriter(progressReporter));
         }
+
+        var callback = new CommandCallback();
+        var comm = new DirectComm(progressReporter, new DirectCommandDispatcher(callback));
+
+
+        return new(comm, nodejsRuntime, callback, paths);
     }
+
+    public async Task RunAsync()
+    {
+        await nodejsRuntime.RunAsync(async () =>
+        {
+            try
+            {
+                var module = await nodejsRuntime.ImportAsync("./" + paths.EntryPoint, esModule: true);
+                var defaultExport = module.GetProperty("default");
+                var invoker = defaultExport.GetProperty(Exports.CommandEmitter);
+                if (invoker.IsNullOrUndefined())
+                {
+                    throw new Exception($"missing export of 'default.{Exports.CommandEmitter}' in {paths.EntryPoint}");
+                }
+                callback.Register(invoker);
+
+                defaultExport.CallMethod(Exports.MainMethod);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        });
+    }
+
+    private static Paths GetPaths()
+    {
+        var baseDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
+        var runtime = "win-x64";
+        var libnodePath = Path.Combine(baseDir, $"runtimes/{runtime}/native", "libnode.dll");
+        var clientApp = Path.Combine(baseDir, "CLI", "dist", "bundle.mjs");
+
+        return new Paths { ClientApp = clientApp, LibNode = libnodePath, BaseDir = baseDir };
+    }
+
 }
 
 class Exports
