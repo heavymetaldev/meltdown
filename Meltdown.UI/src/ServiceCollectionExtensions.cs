@@ -15,8 +15,10 @@ public static class ServiceCollectionExtensions
         //services.AddTransient<IProgressReporter, SignalRProgressReporter>();
     }
 
-    private static void AddDirectLogger(IServiceCollection services)
+    private static void AddDirectLogger(IServiceCollection services, Action<DirectUILoggerOptions>? configure = null)
     {
+        configure ??= options => { };
+        services.Configure<DirectUILoggerOptions>(configure);
         services.AddSingleton<ILoggerProvider, DirectUILoggerProvider>();
     }
 

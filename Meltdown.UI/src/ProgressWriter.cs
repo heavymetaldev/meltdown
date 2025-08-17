@@ -14,7 +14,7 @@ public class ProgressWriter(IProgressReporter progress) : TextWriter
                 // Ignore carriage return
                 return;
             case '\n':
-                progress.Log("console", lineBuffer.ToString()).GetAwaiter().GetResult();
+                progress.Log("console|server", lineBuffer.ToString()).GetAwaiter().GetResult();
                 lineBuffer.Clear();
                 break;
             default:
