@@ -62,29 +62,41 @@ $targets = [ordered]@{
     }
 
     "update-ink-components" = {
-        param([switch][bool] $clean, [switch][bool]$withNodeModules = $false, [string]$linkTo = $null) 
+        # Updates ink-components in the CLI project by copying files from the ink-components repo.
+        # If -clean is specified, removes existing ink-components and does a full copy.
+        # If -full is specified, copies the entire ink-components folder instead of just /build.
+        # If -linkTo is specified, creates a junction to link the build directory to another location.
+        param([switch][bool] $clean, [switch][bool]$full = $false, [string]$linkTo = $null) 
+        
         if ($clean) {
             if (Test-Path "$psscriptRoot/src/CLI/node_modules/ink-components") {
                 rm -Recurse -Force $psscriptRoot/src/CLI/node_modules/ink-components
             }
-            $withNodeModules = $true
+            $full = $true
         }
         $inkComponents = "$psscriptroot/../../ink-components"
-        if ($withNodeModules) {
-            Write-Host "Copying ink-components to node_modules" -ForegroundColor Green
-            cp $inkComponents "$psscriptRoot/src/CLI/node_modules/" -Force -Recurse
+        $targetDir = "$psscriptRoot/src/CLI/node_modules/"
+        if ($full) {
+            # copy everything, including dependencies (node_modules) of ink-components
+            # slower, but needed initially
+            Write-Host "Copying FULL ink-components to node_modules" -ForegroundColor Green
+            cp $inkComponents $targetDir -Force -Recurse
         }
         else {
+            # only update the build directory of ink-components
+            # faster, assumes the dependencies are already in node_modules and haven't changed
             Write-Host "Copying ink-components /build to node_modules" -ForegroundColor Green
-            cp "$inkComponents/build" "$psscriptRoot/src/CLI/node_modules/ink-components/" -Force -Recurse -Verbose
-            cp "$inkComponents/package.json" "$psscriptRoot/src/CLI/node_modules/ink-components/package.json" -Force -Recurse
+            cp "$inkComponents/build" $targetDir -Force -Recurse -Verbose
+            cp "$inkComponents/package.json" "$targetDir/ink-components/package.json" -Force -Recurse
         }
         if ($linkTo) {
+            # link the build directory - then we don't need to copy anymire
             Write-Host "Creating junction for ink-components /build" -ForegroundColor Green
-            $buildDir = "$psscriptRoot/src/CLI/node_modules/ink-components/build"
+            $buildDir = "$targetDir/ink-components/build"
             rm -r $buildDir -Verbose
             New-Junction -path $buildDir -target "$linkTo/build" -Verbose
         }
+        
         Write-Host "Copying ink-components /samples to CLI" -ForegroundColor Green
         cp "$inkComponents/samples/cli-sample/*" "$psscriptRoot/src/CLI" -Force -Recurse
         
