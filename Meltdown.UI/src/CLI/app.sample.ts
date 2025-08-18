@@ -24,9 +24,9 @@ cli.cli({
         name: "stop",
         description: "Stop the app",
         key: "x",
-      }])
-    );
-
+      }
+    ]));
+    
     cli.commandEmitter.on("invoke", (command, path, args) => {
       switch (command) {
         case "start":
@@ -73,7 +73,7 @@ cli.cli({
     }
     , 1000);
   },
-  variant: "master-detail",
+  variant: "treeview",
 });
 
 // cli({

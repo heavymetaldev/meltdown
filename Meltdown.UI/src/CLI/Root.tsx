@@ -10,21 +10,22 @@ import {
   usePages,
   Viewport,
 } from "./dependencies/tuir.js";
-import { PageIndicator, progressEmitter } from "./dependencies/ink-components.js";
+import { PageIndicator, progressEmitter, GradientText } from "./dependencies/ink-components.js";
 import { MasterDetail } from "./Pages/MasterDetail.js";
 import { SimpleLog } from "./Pages/Simple.js";
+import { ProgressDemo } from "./Pages/ProgressDemo.js";
 
 type PagesReturn = ReturnType<typeof usePages>;
 type PagesControl = PagesReturn["control"];
 
-const VARIANTS = ["simple", "master-detail", "treeview"] as const;
+const VARIANTS = ["simple", "master-detail", "treeview", "progress"] as const;
 type RootVariant = (typeof VARIANTS)[number];
 
 export function Root({
   init,
   variant: initialVariant,
 }: { init?: () => void; variant?: RootVariant } = {}) {
-  initialVariant ??= "master-detail";
+  initialVariant ??= "treeview";
   const variants = VARIANTS as unknown as string[];
   const [variant, setVariant] = React.useState(initialVariant);
 
@@ -63,13 +64,15 @@ export function Root({
         <SimpleLog />
         <MasterDetail variant="listView" />
         <MasterDetail variant="treeView" />
+        <ProgressDemo />
       </Pages>
       <PageIndicator
         pageNames={variants}
         currentPage={pageControl.currentPage}
       />
       <Box marginTop={-1}>
-        <Text>⌨️ </Text>
+        <GradientText startColor="#00ff00" endColor="#0000ff">[🛰️{process.pid}]</GradientText>
+        <Text> ⌨️ </Text>
         <StdinState
           showEvents={true}
           showRegister={true}
@@ -97,7 +100,7 @@ function usePageNavigation(pageNames: string[], pageControl: PagesControl) {
   const { useEvent } = useKeymap(pagesKeymap);
 
   useEvent("quit", () => {
-    process.exit(0);
+    //process.exit(0);
   });
 
   useEvent("goToPage", (char: string) => {

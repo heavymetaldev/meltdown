@@ -63,6 +63,7 @@ $targets = [ordered]@{
 
     "update-ink-components" = {
         # Updates ink-components in the CLI project by copying files from the ink-components repo.
+        
         # If -clean is specified, removes existing ink-components and does a full copy.
         # If -full is specified, copies the entire ink-components folder instead of just /build.
         # If -linkTo is specified, creates a junction to link the build directory to another location.

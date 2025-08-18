@@ -40,9 +40,9 @@ export function MasterDetail({
   } satisfies KeyMap;
   const keyMap = useKeymap(mainKeyMap);
 
-  keyMap.useEvent("quit", () => {
-    process.exit(0);
-  });
+  // keyMap.useEvent("quit", () => {
+  //   process.exit(0);
+  // });
   keyMap.useEvent("tab", () => {
     control.next();
   });
@@ -72,7 +72,7 @@ export function MasterDetail({
     <Box flexDirection="column">
       <CommandList item={selectedProgress} />
       <Node {...register("list")}>
-        <Frame height={10} borderStyle={{ ...cliBoxes.doubleSingle }}>
+        <Frame height={15} borderStyle={{ ...cliBoxes.doubleSingle }}>
           <ProgressVisualiser
             progress={progress}
             onItemSelected={(i) => setSelectedItem(i)}
