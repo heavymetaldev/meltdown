@@ -2,7 +2,7 @@
 Console.WriteLine("Starting progress-list sample...");
 
 var comm = await Meltdown.UI.NodeUI.StartAsync();
-await comm.ProgressReporter.Command("root", "setVariant", ["simple"]);
+await comm.ProgressReporter.InvokeUICommand("root", "setVariant", ["simple"]);
 
 IEnumerable<string> GatherData()
 {

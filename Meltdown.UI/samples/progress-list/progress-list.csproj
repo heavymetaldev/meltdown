@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Meltdown.UI" Version="1.0.2-beta028" />
+    <PackageReference Include="Meltdown.UI" Version="1.0.3-beta032" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="9.0.4" />
   </ItemGroup>
 
