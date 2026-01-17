@@ -110,25 +110,6 @@ $targets = [ordered]@{
         }
     }
 
-    "update-samples"        = {
-        qbuild publish
-
-        $samplePath = "$PSScriptRoot/samples"
-        $sampleProjects = Get-ChildItem -Path $samplePath -Filter *.csproj -Recurse -Depth 1
-        foreach ($project in $sampleProjects) {
-            $projectPath = $project.FullName
-            $csproj = (Get-Content $projectPath) | Out-String
-            if ($csproj -notmatch "<PackageReference Include=""Meltdown.UI""") {
-                write-host "Skipping project: $projectPath because it doesn't containt package reference to Meltdown.UI" -ForegroundColor Yellow
-                continue
-            } 
-            Write-Host "Updating project: $projectPath" -ForegroundColor Green
-            dotnet add $projectPath package "Meltdown.UI" --prerelease -s "$PSScriptRoot/dist/nuget"
-            Write-Host "Building project: $projectPath" -ForegroundColor Green
-            dotnet build $projectPath --verbosity detailed
-        }
-    } 
-
     "clean"                 = {
         $binDirs = Get-ChildItem $PSScriptRoot -Filter bin -Recurse -Directory -Depth 3
         $binDirs | ForEach-Object {
@@ -150,7 +131,7 @@ $targets = [ordered]@{
     }
 
     "samples"               = @{
-        "build" = {
+        "build"  = {
             $samplePath = "$PSScriptRoot/samples"
             $sampleProjects = Get-ChildItem -Path $samplePath -Filter *.csproj -Recurse -Depth 1
             foreach ($project in $sampleProjects) {
@@ -160,7 +141,25 @@ $targets = [ordered]@{
             }
         }
 
-        "run"   = {
+        "update" = {
+            qbuild publish
+
+            $samplePath = "$PSScriptRoot/samples"
+            $sampleProjects = Get-ChildItem -Path $samplePath -Filter *.csproj -Recurse -Depth 1
+            foreach ($project in $sampleProjects) {
+                $projectPath = $project.FullName
+                $csproj = (Get-Content $projectPath) | Out-String
+                if ($csproj -notmatch "<PackageReference Include=""Meltdown.UI""") {
+                    write-host "Skipping project: $projectPath because it doesn't containt package reference to Meltdown.UI" -ForegroundColor Yellow
+                    continue
+                } 
+                Write-Host "Updating project: $projectPath" -ForegroundColor Green
+                dotnet add $projectPath package "Meltdown.UI" --prerelease -s "$PSScriptRoot/dist/nuget"
+                Write-Host "Building project: $projectPath" -ForegroundColor Green
+                dotnet build $projectPath --verbosity detailed
+            }
+        } 
+        "run"    = {
             param([ValidateSet("progress-list", "progress-list-direct")] $sample = "progress-list")
 
             pushd "$PSScriptRoot/samples/$sample"
