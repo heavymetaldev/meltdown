@@ -129,16 +129,6 @@ $targets = [ordered]@{
         }
     } 
 
-    "build-samples"         = {
-        $samplePath = "$PSScriptRoot/samples"
-        $sampleProjects = Get-ChildItem -Path $samplePath -Filter *.csproj -Recurse -Depth 1
-        foreach ($project in $sampleProjects) {
-            $projectPath = $project.FullName
-            Write-Host "Building project: $projectPath" -ForegroundColor Green
-            dotnet build $projectPath --verbosity detailed
-        }
-    }
-
     "clean"                 = {
         $binDirs = Get-ChildItem $PSScriptRoot -Filter bin -Recurse -Directory -Depth 3
         $binDirs | ForEach-Object {
@@ -156,6 +146,30 @@ $targets = [ordered]@{
         $distDirs | ForEach-Object {
             Write-Host "Removing: $($_.FullName)" -ForegroundColor Green
             Remove-Item $_.FullName -Recurse -Force -ErrorAction Continue
+        }
+    }
+
+    "samples"               = @{
+        "build" = {
+            $samplePath = "$PSScriptRoot/samples"
+            $sampleProjects = Get-ChildItem -Path $samplePath -Filter *.csproj -Recurse -Depth 1
+            foreach ($project in $sampleProjects) {
+                $projectPath = $project.FullName
+                Write-Host "Building project: $projectPath" -ForegroundColor Green
+                dotnet build $projectPath --verbosity detailed
+            }
+        }
+
+        "run"   = {
+            param([ValidateSet("progress-list", "progress-list-direct")] $sample = "progress-list")
+
+            pushd "$PSScriptRoot/samples/$sample"
+            try {
+                dotnet run
+            }
+            finally {
+                popd
+            }
         }
     }
 
