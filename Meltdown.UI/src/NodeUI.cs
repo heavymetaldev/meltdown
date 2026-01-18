@@ -29,7 +29,7 @@ public class NodeUI(
     }
 
     public DirectComm Comm => comm;
-    public record DirectComm(IProgressReporter ProgressReporter, ICommandDispatcher CommandDispatcher);
+    public record DirectComm(IProgressReporter ProgressReporter, IUICommands UiCommands, ICommandDispatcher ServerCommands);
 
     public static async Task<DirectComm> StartAsync(Func<Options, Options>? configure = null)
     {
@@ -58,16 +58,22 @@ public class NodeUI(
                 MainScript = "globalThis.require = require('module').createRequire(process.execPath);\n",
             });
         var progressReporter = new DirectProgressReporter(nodejsRuntime, "./" + paths.EntryPoint);
-        if (options.PatchConsole)
-        {
-            Console.SetOut(new ProgressWriter(progressReporter));
-        }
 
         var callback = new UICommandCallback();
-        var comm = new DirectComm(progressReporter, new DirectCommandDispatcher(callback));
+        var comm = new DirectComm(progressReporter, progressReporter, new DirectCommandDispatcher(callback));
+        var nodeUi = new NodeUI(comm, nodejsRuntime, callback, paths);
 
+        if (options.PatchConsole)
+        {
+            nodeUi.PatchConsole();
+        }
 
-        return new(comm, nodejsRuntime, callback, paths);
+        return nodeUi;
+    }
+
+    public void PatchConsole()
+    {
+        Console.SetOut(new ProgressWriter(this.Comm.ProgressReporter));
     }
 
     public async Task RunAsync()
